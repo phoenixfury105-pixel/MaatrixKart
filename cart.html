@@ -1,0 +1,1914 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Cart - MaatrixKart</title>
+
+<style>
+
+/* =====================================================
+   LIQUID GLASS DARK INTERFACE
+===================================================== */
+
+*{
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    color:#f5f7ff;
+
+    background:
+        radial-gradient(
+            circle at 10% 10%,
+            rgba(50,110,255,.22),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 90% 20%,
+            rgba(150,70,255,.20),
+            transparent 30%
+        ),
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(0,180,255,.12),
+            transparent 35%
+        ),
+        #080b14;
+
+    background-attachment:fixed;
+
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+header{
+
+    position:sticky;
+
+    top:0;
+
+    z-index:100;
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.04)
+        );
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.12);
+
+    box-shadow:
+        0 10px 35px
+        rgba(0,0,0,.25);
+
+    color:white;
+
+    padding:15px 5%;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+}
+
+
+/* LOGO */
+
+.logo{
+
+    font-size:26px;
+
+    font-weight:bold;
+
+    letter-spacing:.3px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #ffffff,
+            #9cc7ff,
+            #d5b7ff
+        );
+
+    -webkit-background-clip:text;
+
+    background-clip:text;
+
+    color:transparent;
+
+}
+
+
+/* HEADER LINKS */
+
+header a{
+
+    color:#e9efff;
+
+    text-decoration:none;
+
+    margin-left:20px;
+
+    padding:8px 13px;
+
+    border-radius:12px;
+
+    transition:.25s;
+
+}
+
+header a:hover{
+
+    background:
+        rgba(255,255,255,.12);
+
+    box-shadow:
+        inset 0 0 15px
+        rgba(255,255,255,.05);
+
+    transform:translateY(-1px);
+
+}
+
+
+/* =====================================================
+   MAIN CONTAINER
+===================================================== */
+
+.container{
+
+    max-width:1200px;
+
+    margin:30px auto;
+
+    padding:0 15px;
+
+}
+
+
+/* =====================================================
+   TITLE GLASS
+===================================================== */
+
+.title{
+
+    background:
+        linear-gradient(
+            135deg,
+            rgba(255,255,255,.12),
+            rgba(255,255,255,.045)
+        );
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.13);
+
+    padding:25px;
+
+    border-radius:24px;
+
+    margin-bottom:20px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.25),
+
+        inset 0 1px 0
+        rgba(255,255,255,.08);
+
+}
+
+
+.title h1{
+
+    margin:0;
+
+    font-size:28px;
+
+}
+
+
+/* =====================================================
+   LAYOUT
+===================================================== */
+
+.layout{
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:20px;
+
+}
+
+
+/* =====================================================
+   GLASS BOX
+===================================================== */
+
+.box{
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.115),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:blur(28px);
+    -webkit-backdrop-filter:blur(28px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    padding:20px;
+
+    border-radius:24px;
+
+    box-shadow:
+
+        0 20px 50px
+        rgba(0,0,0,.25),
+
+        inset 0 1px 0
+        rgba(255,255,255,.07);
+
+}
+
+
+/* =====================================================
+   CART ITEM
+===================================================== */
+
+.item{
+
+    display:flex;
+
+    gap:20px;
+
+    padding:20px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.10);
+
+}
+
+.item:last-child{
+
+    border-bottom:none;
+
+}
+
+
+/* =====================================================
+   PRODUCT IMAGE
+===================================================== */
+
+.item-image{
+
+    width:130px;
+
+    height:130px;
+
+    object-fit:contain;
+
+    padding:10px;
+
+    border-radius:18px;
+
+    background:
+        rgba(255,255,255,.07);
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    box-shadow:
+        inset 0 1px 0
+        rgba(255,255,255,.08);
+
+}
+
+
+/* =====================================================
+   ITEM INFO
+===================================================== */
+
+.item-info{
+
+    flex:1;
+
+}
+
+
+.name{
+
+    font-size:19px;
+
+    font-weight:bold;
+
+    color:#ffffff;
+
+}
+
+
+.item-info > div:nth-child(2){
+
+    color:#aeb9d5;
+
+    margin-top:6px;
+
+}
+
+
+.price{
+
+    font-size:19px;
+
+    font-weight:bold;
+
+    margin-top:10px;
+
+    color:#9fc7ff;
+
+}
+
+
+.stock{
+
+    color:#62e6a5;
+
+    margin-top:7px;
+
+}
+
+
+/* =====================================================
+   QUANTITY
+===================================================== */
+
+.quantity{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:15px;
+
+}
+
+
+.quantity button{
+
+    width:36px;
+
+    height:36px;
+
+    padding:0;
+
+    background:
+        rgba(255,255,255,.08);
+
+    color:#fff;
+
+    border:
+        1px solid
+        rgba(255,255,255,.15);
+
+    border-radius:11px;
+
+    font-size:18px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.quantity button:hover{
+
+    background:
+        rgba(90,150,255,.25);
+
+    border-color:
+        rgba(130,180,255,.4);
+
+    transform:translateY(-1px);
+
+}
+
+
+.quantity button:disabled{
+
+    opacity:.35;
+
+    cursor:not-allowed;
+
+    transform:none;
+
+}
+
+
+.quantity strong{
+
+    min-width:28px;
+
+    text-align:center;
+
+    font-size:16px;
+
+}
+
+
+/* =====================================================
+   REMOVE
+===================================================== */
+
+.remove{
+
+    color:#8ebcff;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+    display:inline-block;
+
+    transition:.2s;
+
+}
+
+
+.remove:hover{
+
+    color:#ff8f9f;
+
+}
+
+
+/* =====================================================
+   SUMMARY
+===================================================== */
+
+.summary h2{
+
+    margin-top:0;
+
+    color:#ffffff;
+
+}
+
+
+.row{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    padding:12px 0;
+
+    border-bottom:
+        1px solid
+        rgba(255,255,255,.10);
+
+    color:#cbd4ea;
+
+}
+
+
+.row span:last-child{
+
+    color:#ffffff;
+
+}
+
+
+.total{
+
+    font-size:20px;
+
+    font-weight:bold;
+
+    color:#ffffff;
+
+    border-bottom:none;
+
+}
+
+
+/* =====================================================
+   CHECKOUT BUTTON
+===================================================== */
+
+.checkout{
+
+    width:100%;
+
+    padding:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2874f0,
+            #7048e8
+        );
+
+    color:white;
+
+    border:
+        1px solid
+        rgba(255,255,255,.15);
+
+    border-radius:15px;
+
+    font-size:16px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:15px;
+
+    box-shadow:
+        0 10px 30px
+        rgba(60,100,255,.30);
+
+    transition:.25s;
+
+}
+
+
+.checkout:hover{
+
+    transform:translateY(-2px);
+
+    box-shadow:
+        0 15px 35px
+        rgba(60,100,255,.45);
+
+}
+
+
+/* =====================================================
+   CLEAR BUTTON
+===================================================== */
+
+.clear{
+
+    width:100%;
+
+    padding:12px;
+
+    background:
+        rgba(255,255,255,.06);
+
+    color:#dce5fa;
+
+    border:
+        1px solid
+        rgba(255,255,255,.13);
+
+    border-radius:15px;
+
+    margin-top:10px;
+
+    cursor:pointer;
+
+    transition:.2s;
+
+}
+
+
+.clear:hover{
+
+    background:
+        rgba(255,255,255,.12);
+
+}
+
+
+/* =====================================================
+   EMPTY CART
+===================================================== */
+
+.empty{
+
+    text-align:center;
+
+    padding:70px 30px;
+
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,.10),
+            rgba(255,255,255,.035)
+        );
+
+    backdrop-filter:blur(25px);
+    -webkit-backdrop-filter:blur(25px);
+
+    border:
+        1px solid
+        rgba(255,255,255,.12);
+
+    border-radius:24px;
+
+    box-shadow:
+        0 20px 50px
+        rgba(0,0,0,.25);
+
+}
+
+
+.empty h2{
+
+    margin-top:0;
+
+    font-size:25px;
+
+}
+
+
+.empty p{
+
+    color:#aeb9d5;
+
+}
+
+
+.empty a{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2874f0,
+            #7048e8
+        );
+
+    color:white;
+
+    padding:12px 22px;
+
+    text-decoration:none;
+
+    border-radius:14px;
+
+    box-shadow:
+        0 10px 25px
+        rgba(50,100,255,.3);
+
+    transition:.2s;
+
+}
+
+
+.empty a:hover{
+
+    transform:translateY(-2px);
+
+}
+
+
+/* =====================================================
+   LOADING
+===================================================== */
+
+.loading{
+
+    text-align:center;
+
+    padding:70px;
+
+    color:#b8c4df;
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+.error{
+
+    background:
+        rgba(255,70,90,.12);
+
+    color:#ffb6c0;
+
+    padding:15px;
+
+    border:
+        1px solid
+        rgba(255,100,120,.25);
+
+    border-radius:15px;
+
+}
+
+
+/* =====================================================
+   SCROLLBAR
+===================================================== */
+
+::-webkit-scrollbar{
+
+    width:8px;
+
+}
+
+::-webkit-scrollbar-track{
+
+    background:#080b14;
+
+}
+
+::-webkit-scrollbar-thumb{
+
+    background:
+        linear-gradient(
+            #426fdc,
+            #7c55d9
+        );
+
+    border-radius:10px;
+
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media(max-width:800px){
+
+    .layout{
+
+        grid-template-columns:1fr;
+
+    }
+
+
+    .item{
+
+        flex-direction:column;
+
+    }
+
+
+    .item-image{
+
+        width:100%;
+
+        height:180px;
+
+    }
+
+
+    header{
+
+        flex-direction:column;
+
+        gap:10px;
+
+        padding:14px 15px;
+
+    }
+
+
+    header a{
+
+        margin-left:5px;
+
+        margin-right:5px;
+
+    }
+
+
+    .title h1{
+
+        font-size:24px;
+
+    }
+
+}
+
+
+@media(max-width:480px){
+
+    .container{
+
+        margin:18px auto;
+
+        padding:0 10px;
+
+    }
+
+
+    .box,
+    .title,
+    .empty{
+
+        border-radius:20px;
+
+        padding:16px;
+
+    }
+
+
+    .item{
+
+        gap:12px;
+
+    }
+
+
+    .name{
+
+        font-size:17px;
+
+    }
+
+
+    .logo{
+
+        font-size:23px;
+
+    }
+
+}
+
+</style>
+
+
+
+
+
+<style id="maatrix-dark-cart-theme">
+/* FINAL DARK LIQUID GLASS THEME */
+body{
+    color:#f5f7ff !important;
+    background:
+        radial-gradient(circle at 8% 5%,rgba(45,105,255,.23),transparent 30%),
+        radial-gradient(circle at 92% 8%,rgba(140,65,255,.22),transparent 30%),
+        radial-gradient(circle at 50% 100%,rgba(0,180,255,.12),transparent 38%),
+        #070a12 !important;
+}
+header{
+    background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,255,255,.035)) !important;
+    border-bottom:1px solid rgba(255,255,255,.12) !important;
+    box-shadow:0 10px 35px rgba(0,0,0,.30) !important;
+    color:#f5f7ff !important;
+}
+.logo{
+    background:linear-gradient(90deg,#ffffff,#9ec8ff,#d7b8ff) !important;
+    -webkit-background-clip:text !important;
+    background-clip:text !important;
+}
+header a{color:#edf3ff !important}
+header a:hover{background:rgba(255,255,255,.10) !important}
+.title,.box,.empty{
+    background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.035)) !important;
+    border:1px solid rgba(255,255,255,.13) !important;
+    box-shadow:0 20px 50px rgba(0,0,0,.25),inset 0 1px 0 rgba(255,255,255,.08) !important;
+}
+.title h1,.summary h2,.name{color:#fff !important}
+.item{border-bottom-color:rgba(255,255,255,.10) !important}
+.item-info > div:nth-child(2),.empty p{color:#aeb9d5 !important}
+.price{color:#9fc7ff !important}
+.stock{color:#62e6a5 !important}
+.quantity button{
+    background:rgba(255,255,255,.08) !important;
+    color:#fff !important;
+    border-color:rgba(255,255,255,.15) !important;
+}
+.quantity button:hover{background:rgba(90,150,255,.25) !important}
+.quantity strong{color:#fff !important}
+.remove{color:#8ebcff !important}
+.remove:hover{color:#ff8f9f !important}
+.row{color:#cbd4ea !important;border-bottom-color:rgba(255,255,255,.10) !important}
+.row span:last-child,.total{color:#fff !important}
+.clear{
+    background:rgba(255,255,255,.06) !important;
+    color:#dce5fa !important;
+    border-color:rgba(255,255,255,.13) !important;
+}
+.item-image{
+    background:rgba(255,255,255,.07) !important;
+    border-color:rgba(255,255,255,.10) !important;
+}
+.discount-line{color:#55df99 !important}
+.old-cart-price{color:#7e899f !important}
+.wishlist-move{
+    background:rgba(255,255,255,.06) !important;
+    color:#ff9bb5 !important;
+    border-color:rgba(255,255,255,.13) !important;
+}
+.wishlist-move:hover{background:rgba(255,80,130,.14) !important}
+.empty h2{color:#fff !important}
+::-webkit-scrollbar-track{background:#070a12 !important}
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header>
+
+    <div class="logo">
+        MaatrixKart
+    </div>
+
+
+    <div>
+
+        <a href="index.html">
+            Home
+        </a>
+
+        <a href="wishlist.html">
+            Wishlist
+        </a>
+
+        <a href="account.html">
+            Account
+        </a>
+
+    </div>
+
+</header>
+
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<div class="container">
+
+
+    <div class="title">
+
+        <h1>
+            🛒 My Cart
+        </h1>
+
+    </div>
+
+
+    <div
+        id="main"
+        class="loading"
+    >
+
+        Loading your cart...
+
+    </div>
+
+
+</div>
+
+
+<!-- =====================================================
+     SUPABASE
+===================================================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase-config.js"></script>
+
+
+<script>
+
+const supabaseClient = window.db;
+
+</script>
+
+
+<script>
+
+/* =====================================================
+   ORIGINAL WORKING CART LOGIC
+===================================================== */
+
+let currentUser = null;
+
+let cartItems = [];
+
+let products = [];
+
+
+/* =====================================================
+   GET USER
+===================================================== */
+
+async function getUser(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient.auth.getUser();
+
+
+    if(
+        error ||
+        !data ||
+        !data.user
+    ){
+
+        window.location.href =
+            "login.html";
+
+        return null;
+
+    }
+
+
+    currentUser =
+        data.user;
+
+
+    return currentUser;
+
+}
+
+
+/* =====================================================
+   LOAD CART
+===================================================== */
+
+async function loadCart(){
+
+    const user =
+        await getUser();
+
+
+    if(!user){
+
+        return;
+
+    }
+
+
+    const {
+        data:cart,
+        error:cartError
+    } =
+        await supabaseClient
+            .from("cart_items")
+            .select("*")
+            .eq(
+                "user_id",
+                user.id
+            );
+
+
+    if(cartError){
+
+        showError(
+            cartError.message
+        );
+
+        return;
+
+    }
+
+
+    cartItems =
+        cart || [];
+
+
+    const {
+        data:productData,
+        error:productError
+    } =
+        await supabaseClient
+            .from("products")
+            .select("*");
+
+
+    if(productError){
+
+        showError(
+            productError.message
+        );
+
+        return;
+
+    }
+
+
+    products =
+        productData || [];
+
+
+    /*
+     * Remove products that no longer exist.
+     */
+
+    for(
+        const item of [...cartItems]
+    ){
+
+        const product =
+            products.find(
+                p =>
+                    String(p.id) ===
+                    String(item.product_id)
+            );
+
+
+        if(!product){
+
+            await supabaseClient
+                .from("cart_items")
+                .delete()
+                .eq("id", item.id);
+
+        }
+
+    }
+
+
+    await refreshCart();
+
+}
+
+
+/* =====================================================
+   REFRESH
+===================================================== */
+
+async function refreshCart(){
+
+    const {
+        data,
+        error
+    } =
+        await supabaseClient
+            .from("cart_items")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        showError(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    cartItems =
+        data || [];
+
+
+    renderCart();
+
+}
+
+
+/* =====================================================
+   RENDER
+===================================================== */
+
+function renderCart(){
+
+    const main =
+        document.getElementById(
+            "main"
+        );
+
+
+    if(cartItems.length === 0){
+
+        main.className =
+            "empty";
+
+
+        main.innerHTML = `
+
+            <h2>
+                Your cart is empty
+            </h2>
+
+            <p>
+                Add some products to your cart.
+            </p>
+
+            <a href="index.html">
+                Continue Shopping
+            </a>
+
+        `;
+
+        return;
+
+    }
+
+
+    let subtotal = 0;
+
+    let itemsCount = 0;
+
+    let html = `
+
+        <div class="layout">
+
+            <div class="box">
+
+    `;
+
+
+    cartItems.forEach(item => {
+
+        const product =
+            products.find(
+                p =>
+                    String(p.id) ===
+                    String(item.product_id)
+            );
+
+
+        if(!product){
+
+            return;
+
+        }
+
+
+        const price =
+            Number(
+                product.price || 0
+            );
+
+
+        const stock =
+            Number(
+                product.stock || 0
+            );
+
+
+        const quantity =
+            Math.min(
+                Number(
+                    item.quantity || 1
+                ),
+                stock
+            );
+
+
+        const itemTotal =
+            price * quantity;
+
+
+        subtotal +=
+            itemTotal;
+
+
+        itemsCount +=
+            quantity;
+
+
+        html += `
+
+            <div class="item">
+
+                <img
+                    class="item-image"
+
+                    src="${
+                        product.image ||
+                        'https://via.placeholder.com/200?text=Product'
+                    }"
+
+                    onerror="this.src='https://via.placeholder.com/200?text=Product'"
+                >
+
+
+                <div class="item-info">
+
+                    <div class="name">
+                        ${escapeHTML(
+                            product.name
+                        )}
+                    </div>
+
+
+                    <div>
+                        ${escapeHTML(
+                            product.category || ""
+                        )}
+                    </div>
+
+
+                    <div class="price">
+                        ₹${price.toLocaleString("en-IN")}
+                        ${
+                            Number(product.old_price || product.original_price || product.mrp || 0) > price
+                            ? `<span class="old-cart-price">₹${Number(product.old_price || product.original_price || product.mrp || 0).toLocaleString("en-IN")}</span>`
+                            : ""
+                        }
+                    </div>
+
+                    ${
+                        Number(product.old_price || product.original_price || product.mrp || 0) > price
+                        ? `<div class="discount-line">
+                            ${Math.round(((Number(product.old_price || product.original_price || product.mrp || 0)-price)/Number(product.old_price || product.original_price || product.mrp || 0))*100)}% off
+                           </div>`
+                        : ""
+                    }
+
+                    <div class="stock">
+                        ✓ ${stock} available
+                    </div>
+
+
+                    <div class="quantity">
+
+                        <button
+                            onclick="changeQuantity(
+                                '${escapeAttribute(item.id)}',
+                                ${quantity - 1}
+                            )"
+                        >
+                            −
+                        </button>
+
+
+                        <strong>
+                            ${quantity}
+                        </strong>
+
+
+                        <button
+                            onclick="changeQuantity(
+                                '${escapeAttribute(item.id)}',
+                                ${quantity + 1}
+                            )"
+                            ${
+                                quantity >= stock
+                                ? "disabled"
+                                : ""
+                            }
+                        >
+                            +
+                        </button>
+
+                    </div>
+
+
+                    <button
+                        class="wishlist-move"
+                        onclick="moveToWishlist('${escapeAttribute(item.id)}')"
+                        type="button"
+                    >
+                        ❤️ Move to Wishlist
+                    </button>
+
+                    <div
+                        class="remove"
+                        onclick="removeItem(
+                            '${escapeAttribute(item.id)}'
+                        )"
+                    >
+
+                        🗑️ Remove
+
+                    </div>
+
+                </div>
+
+
+                <strong>
+
+                    ₹${itemTotal.toLocaleString("en-IN")}
+
+                </strong>
+
+            </div>
+
+        `;
+
+    });
+
+
+    let originalTotal = 0;
+
+    cartItems.forEach(item => {
+        const p = products.find(x => String(x.id) === String(item.product_id));
+        if (!p) return;
+        const qty = Math.min(Number(item.quantity || 1), Number(p.stock || 0));
+        const old = Number(p.old_price || p.original_price || p.mrp || 0);
+        originalTotal += (old > Number(p.price || 0) ? old : Number(p.price || 0)) * qty;
+    });
+
+    const productDiscount = Math.max(0, originalTotal - subtotal);
+
+    const delivery =
+        subtotal >= 500
+        ? 0
+        : 40;
+
+    const total =
+        subtotal +
+        delivery;
+
+
+    html += `
+
+            </div>
+
+
+            <div class="box summary">
+
+                <h2>
+                    Price Details
+                </h2>
+
+
+                <div class="row">
+
+                    <span>
+                        Items
+                    </span>
+
+                    <span>
+                        ${itemsCount}
+                    </span>
+
+                </div>
+
+
+                <div class="row">
+
+                    <span>
+                        Subtotal
+                    </span>
+
+                    <span>
+                        ₹${subtotal.toLocaleString("en-IN")}
+                    </span>
+
+                </div>
+
+                <div class="row">
+                    <span>Discount</span>
+                    <span style="color:#087d47">
+                        ${productDiscount > 0 ? "- ₹" + productDiscount.toLocaleString("en-IN") : "₹0"}
+                    </span>
+                </div>
+
+                <div class="row">
+
+                    <span>
+                        Delivery
+                    </span>
+
+                    <span>
+                        ${
+                            delivery === 0
+                            ? "FREE"
+                            : "₹" + delivery
+                        }
+                    </span>
+
+                </div>
+
+
+                <div class="row total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <span>
+                        ₹${total.toLocaleString("en-IN")}
+                    </span>
+
+                </div>
+
+
+                <button
+                    class="checkout"
+                    onclick="goCheckout()"
+                >
+
+                    Proceed to Checkout
+
+                </button>
+
+
+                <button
+                    class="clear"
+                    onclick="clearCart()"
+                >
+
+                    Clear Cart
+
+                </button>
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    main.className = "";
+
+    main.innerHTML =
+        html;
+
+}
+
+
+/* =====================================================
+   CHANGE QUANTITY
+===================================================== */
+
+async function changeQuantity(
+    cartId,
+    quantity
+){
+
+    const item =
+        cartItems.find(
+            x =>
+                String(x.id) ===
+                String(cartId)
+        );
+
+
+    if(!item){
+
+        return;
+
+    }
+
+
+    const product =
+        products.find(
+            p =>
+                String(p.id) ===
+                String(item.product_id)
+        );
+
+
+    if(!product){
+
+        return;
+
+    }
+
+
+    const stock =
+        Number(
+            product.stock || 0
+        );
+
+
+    if(quantity <= 0){
+
+        await removeItem(
+            cartId
+        );
+
+        return;
+
+    }
+
+
+    if(quantity > stock){
+
+        alert(
+            "Only " +
+            stock +
+            " items are available."
+        );
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("cart_items")
+            .update({
+                quantity:quantity
+            })
+            .eq(
+                "id",
+                cartId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        alert(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await refreshCart();
+
+}
+
+
+/* =====================================================
+   REMOVE
+===================================================== */
+
+async function removeItem(
+    cartId
+){
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("cart_items")
+            .delete()
+            .eq(
+                "id",
+                cartId
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        alert(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await refreshCart();
+
+}
+
+
+
+/* =====================================================
+   MOVE TO WISHLIST
+===================================================== */
+
+async function moveToWishlist(cartId){
+
+    const item = cartItems.find(
+        x => String(x.id) === String(cartId)
+    );
+
+    if(!item || !currentUser){
+        return;
+    }
+
+    try{
+
+        const { data: existing, error: findError } =
+            await supabaseClient
+                .from("wishlist_items")
+                .select("id")
+                .eq("user_id", currentUser.id)
+                .eq("product_id", String(item.product_id))
+                .maybeSingle();
+
+        if(findError) throw findError;
+
+        if(!existing){
+
+            const { error: insertError } =
+                await supabaseClient
+                    .from("wishlist_items")
+                    .insert({
+                        user_id: currentUser.id,
+                        product_id: String(item.product_id)
+                    });
+
+            if(insertError) throw insertError;
+        }
+
+        const { error: deleteError } =
+            await supabaseClient
+                .from("cart_items")
+                .delete()
+                .eq("id", cartId)
+                .eq("user_id", currentUser.id);
+
+        if(deleteError) throw deleteError;
+
+        await refreshCart();
+
+    }catch(error){
+
+        console.error("Move to wishlist error:", error);
+
+        alert(
+            "Could not move this product to wishlist:\n\n" +
+            error.message
+        );
+    }
+}
+
+/* =====================================================
+   CLEAR
+===================================================== */
+
+async function clearCart(){
+
+    if(
+        !confirm(
+            "Clear your cart?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    const {
+        error
+    } =
+        await supabaseClient
+            .from("cart_items")
+            .delete()
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if(error){
+
+        alert(
+            error.message
+        );
+
+        return;
+
+    }
+
+
+    await refreshCart();
+
+}
+
+
+/* =====================================================
+   CHECKOUT
+===================================================== */
+
+function goCheckout(){
+
+    if(
+        cartItems.length === 0
+    ){
+
+        alert(
+            "Your cart is empty."
+        );
+
+        return;
+
+    }
+
+
+    window.location.href =
+        "checkout.html";
+
+}
+
+
+/* =====================================================
+   ERROR
+===================================================== */
+
+function showError(message){
+
+    document.getElementById(
+        "main"
+    ).innerHTML = `
+
+        <div class="error">
+
+            ${escapeHTML(message)}
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHTML(value){
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+
+}
+
+
+function escapeAttribute(value){
+
+    return String(
+        value ?? ""
+    )
+
+    .replace(/\\/g,"\\\\")
+    .replace(/'/g,"\\'");
+
+}
+
+
+/* =====================================================
+   START
+===================================================== */
+
+document.addEventListener("DOMContentLoaded", function(){
+    loadCart();
+});
+
+</script>
+
+</body>
+
+</html>

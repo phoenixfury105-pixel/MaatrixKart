@@ -1,0 +1,4320 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>My Account - MaatrixKart</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+
+<style>
+
+/* =====================================================
+   MAATRIXKART
+   LIQUID GLASS ACCOUNT
+===================================================== */
+
+:root{
+
+    --blue:#2874f0;
+    --blue2:#536dfe;
+    --purple:#7956ff;
+
+    --text:#172033;
+    --muted:#68758a;
+
+    --glass:rgba(255,255,255,.54);
+    --glass-dark:rgba(231,238,252,.62);
+    --glass-strong:rgba(255,255,255,.72);
+
+    --line:rgba(255,255,255,.82);
+
+    --shadow:
+        0 22px 65px rgba(30,55,100,.16),
+        inset 0 1px 0 rgba(255,255,255,.9);
+}
+
+
+*{
+    box-sizing:border-box;
+}
+
+
+html{
+    scroll-behavior:smooth;
+}
+
+
+body{
+
+    margin:0;
+
+    min-height:100vh;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+    color:var(--text);
+
+    background:
+
+        radial-gradient(
+            circle at 5% 5%,
+            rgba(52,126,255,.28),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 95% 8%,
+            rgba(125,76,255,.25),
+            transparent 30%
+        ),
+
+        radial-gradient(
+            circle at 50% 100%,
+            rgba(35,195,255,.18),
+            transparent 35%
+        ),
+
+        linear-gradient(
+            135deg,
+            #dce8fa,
+            #f5f8ff 45%,
+            #e8effc
+        );
+
+    background-attachment:fixed;
+}
+
+
+button,
+input,
+select,
+textarea{
+    font-family:inherit;
+}
+
+
+button{
+    cursor:pointer;
+}
+
+
+a{
+    text-decoration:none;
+}
+
+
+/* =====================================================
+   GLASS
+===================================================== */
+
+.glass{
+
+    background:var(--glass);
+
+    border:
+        1px solid
+        var(--line);
+
+    backdrop-filter:
+        blur(28px)
+        saturate(160%);
+
+    -webkit-backdrop-filter:
+        blur(28px)
+        saturate(160%);
+
+    box-shadow:var(--shadow);
+}
+
+
+/* =====================================================
+   HEADER
+===================================================== */
+
+.header{
+
+    height:70px;
+
+    width:94%;
+
+    max-width:1400px;
+
+    margin:12px auto;
+
+    border-radius:24px;
+
+    padding:0 16px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    position:sticky;
+
+    top:12px;
+
+    z-index:100;
+
+    background:
+        rgba(25,48,86,.72);
+
+    border:
+        1px solid
+        rgba(255,255,255,.28);
+
+    backdrop-filter:
+        blur(25px)
+        saturate(160%);
+
+    -webkit-backdrop-filter:
+        blur(25px)
+        saturate(160%);
+
+    box-shadow:
+        0 18px 50px
+        rgba(20,42,80,.22);
+}
+
+
+.logo{
+
+    color:white;
+
+    font-size:28px;
+
+    font-weight:900;
+
+    white-space:nowrap;
+
+    letter-spacing:-1px;
+}
+
+
+.logo span{
+
+    color:#ffd84d;
+}
+
+
+.search{
+
+    flex:1;
+
+    max-width:650px;
+
+    height:44px;
+
+    border:0;
+
+    border-radius:15px;
+
+    padding:0 18px;
+
+    font-size:14px;
+
+    outline:none;
+
+    color:#172033;
+
+    background:
+        rgba(255,255,255,.92);
+}
+
+
+.nav{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    margin-left:auto;
+
+    white-space:nowrap;
+}
+
+
+.nav a{
+
+    color:white;
+
+    font-size:13px;
+
+    font-weight:bold;
+
+    padding:10px 11px;
+
+    border-radius:12px;
+
+    transition:.2s;
+}
+
+
+.nav a:hover{
+
+    background:
+        rgba(255,255,255,.16);
+
+    transform:
+        translateY(-2px);
+}
+
+
+.badge{
+
+    display:inline-flex;
+
+    min-width:20px;
+
+    height:20px;
+
+    padding:0 6px;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:#ff4d6d;
+
+    color:white;
+
+    font-size:11px;
+
+}
+
+
+/* =====================================================
+   CONTAINER
+===================================================== */
+
+.container{
+
+    width:92%;
+
+    max-width:1220px;
+
+    margin:
+        28px auto
+        70px;
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+.profile{
+
+    position:relative;
+
+    overflow:hidden;
+
+    color:white;
+
+    border-radius:28px;
+
+    padding:30px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:20px;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(22,67,145,.88),
+            rgba(56,74,165,.78),
+            rgba(101,65,190,.75)
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.32);
+
+    backdrop-filter:
+        blur(30px);
+
+    -webkit-backdrop-filter:
+        blur(30px);
+
+    box-shadow:
+        0 25px 65px
+        rgba(30,60,120,.25);
+}
+
+
+.profile::after{
+
+    content:"";
+
+    position:absolute;
+
+    width:300px;
+
+    height:300px;
+
+    border-radius:50%;
+
+    right:-100px;
+
+    top:-150px;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(255,255,255,.20),
+            transparent 70%
+        );
+}
+
+
+.avatar{
+
+    width:78px;
+
+    height:78px;
+
+    flex-shrink:0;
+
+    background:
+        rgba(255,255,255,.92);
+
+    color:#2874f0;
+
+    border-radius:23px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:38px;
+
+    box-shadow:
+        0 15px 35px
+        rgba(0,0,0,.15);
+
+    position:relative;
+
+    z-index:1;
+}
+
+
+.profile-info{
+
+    flex:1;
+
+    position:relative;
+
+    z-index:1;
+}
+
+
+.profile-info h1{
+
+    margin:0 0 6px;
+
+    font-size:29px;
+
+    letter-spacing:-1px;
+}
+
+
+.profile-info p{
+
+    margin:5px 0;
+
+    color:
+        rgba(255,255,255,.88);
+}
+
+
+.logout{
+
+    position:relative;
+
+    z-index:1;
+
+    border:0;
+
+    border-radius:14px;
+
+    padding:13px 21px;
+
+    background:
+        rgba(255,255,255,.9);
+
+    color:#2874f0;
+
+    font-weight:bold;
+
+    transition:.2s;
+}
+
+
+.logout:hover{
+
+    transform:
+        translateY(-2px);
+
+    background:white;
+}
+
+
+/* =====================================================
+   STATS
+===================================================== */
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:15px;
+
+    margin:20px 0;
+}
+
+
+.stat{
+
+    border-radius:22px;
+
+    padding:22px;
+
+    transition:.22s;
+}
+
+
+.stat:hover{
+
+    transform:
+        translateY(-5px);
+
+    background:
+        var(--glass-strong);
+}
+
+
+.stat-icon{
+
+    font-size:30px;
+
+    margin-bottom:8px;
+}
+
+
+.stat-title{
+
+    color:var(--muted);
+
+    font-size:13px;
+
+    font-weight:600;
+}
+
+
+.stat-number{
+
+    font-size:28px;
+
+    font-weight:900;
+
+    margin-top:8px;
+}
+
+
+/* =====================================================
+   CARD
+===================================================== */
+
+.card{
+
+    border-radius:25px;
+
+    overflow:hidden;
+
+    margin-bottom:22px;
+}
+
+
+.card-header{
+
+    padding:23px;
+
+    border-bottom:
+        1px solid
+        rgba(120,140,175,.18);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+
+.card-header h2{
+
+    margin:0;
+
+    font-size:21px;
+}
+
+
+.card-header p{
+
+    margin:6px 0 0;
+
+    color:var(--muted);
+
+    font-size:13px;
+}
+
+
+.shopping{
+
+    color:#286cf0;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+}
+
+
+/* =====================================================
+   ORDER
+===================================================== */
+
+.order{
+
+    margin:18px;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    background:
+        rgba(255,255,255,.42);
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+
+    box-shadow:
+        0 12px 35px
+        rgba(40,70,120,.08);
+}
+
+
+.order-head{
+
+    padding:17px;
+
+    background:
+        rgba(255,255,255,.34);
+
+    border-bottom:
+        1px solid
+        rgba(120,140,175,.16);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+
+.order-number{
+
+    font-size:17px;
+
+    font-weight:bold;
+}
+
+
+.order-date{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:5px;
+}
+
+
+.status{
+
+    padding:8px 13px;
+
+    border-radius:20px;
+
+    font-size:12px;
+
+    font-weight:bold;
+
+    white-space:nowrap;
+}
+
+
+.status.Placed,
+.status.Confirmed{
+
+    background:
+        rgba(255,243,205,.85);
+
+    color:#856404;
+}
+
+
+.status.Shipped,
+.status.Out{
+
+    background:
+        rgba(219,234,254,.9);
+
+    color:#1d4ed8;
+}
+
+
+.status.Delivered{
+
+    background:
+        rgba(220,252,231,.9);
+
+    color:#15803d;
+}
+
+
+.status.Cancelled{
+
+    background:
+        rgba(254,226,226,.9);
+
+    color:#dc2626;
+}
+
+
+/* =====================================================
+   ORDER INFO
+===================================================== */
+
+.order-info{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(4,1fr);
+
+    gap:12px;
+
+    padding:16px;
+}
+
+
+.info-box{
+
+    background:
+        rgba(255,255,255,.45);
+
+    padding:13px;
+
+    border-radius:13px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.65);
+}
+
+
+.info-label{
+
+    font-size:10px;
+
+    color:var(--muted);
+
+    text-transform:uppercase;
+}
+
+
+.info-value{
+
+    font-weight:bold;
+
+    margin-top:5px;
+
+    font-size:13px;
+}
+
+
+/* =====================================================
+   ORDER ITEM
+===================================================== */
+
+.order-item{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:15px 18px;
+
+    border-top:
+        1px solid
+        rgba(120,140,175,.15);
+}
+
+
+.item-image,
+.item-placeholder{
+
+    width:74px;
+
+    height:74px;
+
+    border-radius:14px;
+}
+
+
+.item-image{
+
+    object-fit:contain;
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+
+    background:white;
+}
+
+
+.item-placeholder{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+
+    font-size:30px;
+
+    background:
+        rgba(255,255,255,.6);
+}
+
+
+.item-info{
+
+    flex:1;
+}
+
+
+.item-name{
+
+    font-weight:bold;
+
+    font-size:15px;
+}
+
+
+.item-meta{
+
+    color:var(--muted);
+
+    font-size:12px;
+
+    margin-top:5px;
+}
+
+
+.item-price{
+
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   ORDER BOTTOM
+===================================================== */
+
+.order-bottom{
+
+    border-top:
+        1px solid
+        rgba(120,140,175,.15);
+
+    padding:17px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+}
+
+
+.total{
+
+    font-size:20px;
+
+    font-weight:bold;
+}
+
+
+.actions{
+
+    display:flex;
+
+    gap:8px;
+
+    flex-wrap:wrap;
+}
+
+
+.btn{
+
+    border:0;
+
+    border-radius:12px;
+
+    padding:10px 14px;
+
+    font-weight:bold;
+
+    font-size:12px;
+
+    transition:.2s;
+}
+
+
+.btn:hover{
+
+    transform:
+        translateY(-2px);
+}
+
+
+.blue{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2874f0,
+            #536dfe
+        );
+
+    color:white;
+}
+
+
+.yellow{
+
+    background:
+        rgba(255,255,255,.72);
+
+    border:
+        1px solid
+        #f0a000;
+
+    color:#9a6800;
+}
+
+
+.red{
+
+    background:
+        rgba(255,255,255,.72);
+
+    border:
+        1px solid
+        #e53935;
+
+    color:#e53935;
+}
+
+
+/* =====================================================
+   EMPTY
+===================================================== */
+
+.empty{
+
+    text-align:center;
+
+    padding:60px 20px;
+
+    color:var(--muted);
+}
+
+
+.empty-icon{
+
+    font-size:50px;
+
+    margin-bottom:10px;
+}
+
+
+.empty h3{
+
+    color:var(--text);
+
+    margin:8px 0;
+}
+
+
+/* =====================================================
+   ADDRESS
+===================================================== */
+
+.address{
+
+    margin:20px;
+
+    padding:20px;
+
+    border-radius:18px;
+
+    border:
+        1px solid
+        rgba(255,255,255,.8);
+
+    background:
+        rgba(255,255,255,.46);
+}
+
+
+.address-title{
+
+    font-size:18px;
+
+    font-weight:bold;
+}
+
+
+.address p{
+
+    margin:6px 0;
+
+    color:#56647a;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:500;
+
+    background:
+        rgba(10,20,40,.68);
+
+    backdrop-filter:
+        blur(12px);
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+}
+
+
+.modal.show{
+
+    display:flex;
+}
+
+
+.modal-box{
+
+    width:100%;
+
+    max-width:650px;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    border-radius:25px;
+
+    background:
+        rgba(240,246,255,.82);
+
+    border:
+        1px solid
+        rgba(255,255,255,.9);
+
+    backdrop-filter:
+        blur(30px);
+
+    box-shadow:
+        0 30px 80px
+        rgba(0,0,0,.28);
+}
+
+
+.modal-head{
+
+    padding:20px;
+
+    border-bottom:
+        1px solid
+        rgba(120,140,175,.2);
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+}
+
+
+.modal-head h2{
+
+    margin:0;
+}
+
+
+.close{
+
+    width:35px;
+
+    height:35px;
+
+    border:0;
+
+    border-radius:50%;
+
+    background:
+        rgba(255,255,255,.7);
+
+    font-size:22px;
+}
+
+
+.modal-body{
+
+    padding:20px;
+}
+
+
+.review-intro{
+
+    background:
+        rgba(255,255,255,.48);
+
+    border-radius:15px;
+
+    padding:18px;
+}
+
+
+.review-intro h2{
+
+    margin:0 0 5px;
+}
+
+
+.label{
+
+    display:block;
+
+    font-weight:bold;
+
+    margin:18px 0 8px;
+}
+
+
+select,
+textarea{
+
+    width:100%;
+
+    border:
+        1px solid
+        rgba(130,150,180,.35);
+
+    border-radius:13px;
+
+    padding:13px;
+
+    font-size:14px;
+
+    background:
+        rgba(255,255,255,.75);
+
+    outline:none;
+}
+
+
+textarea{
+
+    min-height:120px;
+
+    resize:vertical;
+}
+
+
+.stars{
+
+    display:flex;
+
+    gap:3px;
+}
+
+
+.star{
+
+    border:0;
+
+    background:none;
+
+    font-size:35px;
+
+    color:#bbb;
+
+    padding:0;
+}
+
+
+.star.active{
+
+    color:#ffb400;
+}
+
+
+.rating-text{
+
+    color:var(--muted);
+
+    margin-top:5px;
+}
+
+
+.submit{
+
+    width:100%;
+
+    border:0;
+
+    background:
+        linear-gradient(
+            135deg,
+            #2874f0,
+            #536dfe
+        );
+
+    color:white;
+
+    border-radius:13px;
+
+    padding:14px;
+
+    margin-top:18px;
+
+    font-size:15px;
+
+    font-weight:bold;
+}
+
+
+/* =====================================================
+   TRACKING
+===================================================== */
+
+.track{
+
+    padding:25px;
+}
+
+
+.track-line{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    position:relative;
+
+    margin:40px 10px;
+}
+
+
+.track-line:before{
+
+    content:"";
+
+    position:absolute;
+
+    top:15px;
+
+    left:0;
+
+    right:0;
+
+    height:4px;
+
+    background:
+        rgba(120,140,175,.25);
+}
+
+
+.track-step{
+
+    width:20%;
+
+    text-align:center;
+
+    position:relative;
+
+    z-index:1;
+}
+
+
+.track-dot{
+
+    width:32px;
+
+    height:32px;
+
+    margin:auto;
+
+    border-radius:50%;
+
+    background:
+        rgba(140,155,180,.35);
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+
+.track-step.active .track-dot{
+
+    background:
+        linear-gradient(
+            135deg,
+            #2874f0,
+            #536dfe
+        );
+}
+
+
+.track-step span{
+
+    display:block;
+
+    margin-top:8px;
+
+    font-size:11px;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media(max-width:850px){
+
+    .header{
+
+        padding:0 15px;
+
+        gap:10px;
+    }
+
+
+    .logo{
+
+        font-size:22px;
+    }
+
+
+    .search{
+
+        display:none;
+    }
+
+
+    .nav{
+
+        gap:4px;
+    }
+
+
+    .stats{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+
+    .order-info{
+
+        grid-template-columns:
+            repeat(2,1fr);
+    }
+
+}
+
+
+@media(max-width:600px){
+
+    .container{
+
+        width:96%;
+    }
+
+
+    .profile{
+
+        padding:20px;
+
+        align-items:flex-start;
+    }
+
+
+    .avatar{
+
+        width:60px;
+
+        height:60px;
+
+        font-size:30px;
+    }
+
+
+    .profile-info h1{
+
+        font-size:20px;
+    }
+
+
+    .logout{
+
+        padding:10px;
+    }
+
+
+    .order-bottom{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+    }
+
+
+    .order-head{
+
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+
+    .order-info{
+
+        grid-template-columns:
+            1fr 1fr;
+    }
+
+
+    .actions{
+
+        width:100%;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     HEADER
+===================================================== -->
+
+<header class="header">
+
+    <a
+        href="index.html"
+        class="logo"
+    >
+        Maatrix<span>Kart</span>
+    </a>
+
+
+    <input
+        id="searchBox"
+        class="search"
+        placeholder="Search for products..."
+        onkeydown="searchProduct(event)"
+    >
+
+
+    <nav class="nav">
+
+        <a href="index.html">
+            🏠 Home
+        </a>
+
+        <a href="wishlist.html">
+            ❤️ Wishlist
+            <span
+                class="badge"
+                id="wishlistCount"
+            >0</span>
+        </a>
+
+        <a href="cart.html">
+            🛒 Cart
+            <span
+                class="badge"
+                id="cartCount"
+            >0</span>
+        </a>
+
+        <a
+            href="login.html?redirect=account.html"
+            id="accountNav"
+        >
+            🔐 Sign In
+        </a>
+
+    </nav>
+
+</header>
+
+
+
+<!-- =====================================================
+     GUEST / SIGN-IN STATE
+===================================================== -->
+
+<section
+    id="guestView"
+    class="container"
+    style="display:none;"
+>
+    <div
+        class="glass"
+        style="
+            max-width:760px;
+            margin:70px auto;
+            padding:55px 30px;
+            border-radius:30px;
+            text-align:center;
+        "
+    >
+        <div
+            style="
+                width:86px;
+                height:86px;
+                margin:0 auto 20px;
+                border-radius:26px;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                font-size:42px;
+                background:linear-gradient(135deg,#e3ecff,#eee5ff);
+                box-shadow:0 15px 35px rgba(40,70,120,.14);
+            "
+        >🔐</div>
+
+        <h1
+            style="
+                margin:0 0 10px;
+                font-size:32px;
+                letter-spacing:-1px;
+            "
+        >
+            Sign in to MaatrixKart
+        </h1>
+
+        <p
+            style="
+                margin:0 auto;
+                max-width:540px;
+                color:var(--muted);
+                line-height:1.7;
+                font-size:15px;
+            "
+        >
+            Sign in to view your orders, wishlist, cart,
+            saved address and reviews.
+        </p>
+
+        <a
+            href="login.html?redirect=account.html"
+            class="btn blue"
+            style="
+                display:inline-flex;
+                align-items:center;
+                justify-content:center;
+                margin-top:25px;
+                padding:13px 24px;
+                font-size:14px;
+            "
+        >
+            🔐 Sign In
+        </a>
+
+        <div
+            style="
+                margin-top:16px;
+                color:var(--muted);
+                font-size:12px;
+            "
+        >
+            New to MaatrixKart?
+            <a
+                href="register.html"
+                style="color:#286cf0;font-weight:bold;"
+            >Create an account</a>
+        </div>
+    </div>
+</section>
+
+<!-- =====================================================
+     MAIN
+===================================================== -->
+
+<main
+    class="container"
+    id="accountMain"
+    style="display:none;"
+>
+
+
+    <!-- PROFILE -->
+
+    <section class="profile">
+
+        <div
+            class="avatar"
+            id="avatar"
+        >
+            👤
+        </div>
+
+
+        <div class="profile-info">
+
+            <h1 id="userName">
+                Loading...
+            </h1>
+
+            <p id="userEmail">
+                Loading...
+            </p>
+
+            <p>
+                Welcome to your MaatrixKart account
+            </p>
+
+        </div>
+
+
+        <button
+            class="logout"
+            onclick="logout()"
+        >
+            🚪 Logout
+        </button>
+
+    </section>
+
+
+
+    <!-- STATS -->
+
+    <section class="stats">
+
+        <div class="stat glass">
+
+            <div class="stat-icon">
+                📦
+            </div>
+
+            <div class="stat-title">
+                My Orders
+            </div>
+
+            <div
+                class="stat-number"
+                id="ordersCount"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat glass">
+
+            <div class="stat-icon">
+                🛒
+            </div>
+
+            <div class="stat-title">
+                Cart Items
+            </div>
+
+            <div
+                class="stat-number"
+                id="cartStat"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat glass">
+
+            <div class="stat-icon">
+                ❤️
+            </div>
+
+            <div class="stat-title">
+                Wishlist
+            </div>
+
+            <div
+                class="stat-number"
+                id="wishlistStat"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="stat glass">
+
+            <div class="stat-icon">
+                ⭐
+            </div>
+
+            <div class="stat-title">
+                Reviews Written
+            </div>
+
+            <div
+                class="stat-number"
+                id="reviewsCount"
+            >
+                0
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ORDERS -->
+
+    <section class="card glass">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    📦 My Orders
+                </h2>
+
+                <p>
+                    View and manage your MaatrixKart orders
+                </p>
+
+            </div>
+
+
+            <a
+                href="index.html"
+                class="shopping"
+            >
+                Continue Shopping →
+            </a>
+
+        </div>
+
+
+        <div id="ordersContainer">
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ⏳
+                </div>
+
+                Loading orders...
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ADDRESS -->
+
+    <section class="card glass">
+
+        <div class="card-header">
+
+            <div>
+
+                <h2>
+                    📍 Address Book
+                </h2>
+
+                <p>
+                    Your saved delivery address
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div id="addressContainer">
+
+            <div class="empty">
+                Loading address...
+            </div>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+
+<!-- =====================================================
+     REVIEW MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="reviewModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2>
+                ⭐ Write a Review
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeModal('reviewModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="modal-body">
+
+            <div class="review-intro">
+
+                <h2>
+                    How was your product?
+                </h2>
+
+                <p>
+                    Share your experience with other customers.
+                </p>
+
+            </div>
+
+
+            <label class="label">
+                Select Product
+            </label>
+
+            <select id="reviewProduct"></select>
+
+
+            <label class="label">
+                Your Rating
+            </label>
+
+
+            <div class="stars">
+
+                <button
+                    class="star"
+                    data-rating="1"
+                    onclick="setRating(1)"
+                >★</button>
+
+                <button
+                    class="star"
+                    data-rating="2"
+                    onclick="setRating(2)"
+                >★</button>
+
+                <button
+                    class="star"
+                    data-rating="3"
+                    onclick="setRating(3)"
+                >★</button>
+
+                <button
+                    class="star"
+                    data-rating="4"
+                    onclick="setRating(4)"
+                >★</button>
+
+                <button
+                    class="star"
+                    data-rating="5"
+                    onclick="setRating(5)"
+                >★</button>
+
+            </div>
+
+
+            <div
+                class="rating-text"
+                id="ratingText"
+            >
+                Select a rating
+            </div>
+
+
+            <label class="label">
+                Your Review
+            </label>
+
+
+            <textarea
+                id="reviewText"
+                placeholder="Write your experience..."
+            ></textarea>
+
+
+            <button
+                class="submit"
+                id="submitReviewButton"
+                onclick="submitReview()"
+            >
+                ⭐ Submit Review
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     TRACKING MODAL
+===================================================== -->
+
+<div
+    class="modal"
+    id="trackModal"
+>
+
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <h2>
+                🚚 Track Order
+            </h2>
+
+            <button
+                class="close"
+                onclick="closeModal('trackModal')"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="track">
+
+            <div id="trackOrderTitle"></div>
+
+
+            <div class="track-line">
+
+                <div
+                    class="track-step"
+                    data-step="Placed"
+                >
+
+                    <div class="track-dot">
+                        ✓
+                    </div>
+
+                    <span>
+                        Placed
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="track-step"
+                    data-step="Confirmed"
+                >
+
+                    <div class="track-dot">
+                        ✓
+                    </div>
+
+                    <span>
+                        Confirmed
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="track-step"
+                    data-step="Shipped"
+                >
+
+                    <div class="track-dot">
+                        ✓
+                    </div>
+
+                    <span>
+                        Shipped
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="track-step"
+                    data-step="Out for Delivery"
+                >
+
+                    <div class="track-dot">
+                        ✓
+                    </div>
+
+                    <span>
+                        Out for Delivery
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="track-step"
+                    data-step="Delivered"
+                >
+
+                    <div class="track-dot">
+                        ✓
+                    </div>
+
+                    <span>
+                        Delivered
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<script>
+
+/* =====================================================
+   SUPABASE
+===================================================== */
+
+const db = window.db;
+
+
+/* =====================================================
+   VARIABLES
+===================================================== */
+
+let currentUser = null;
+
+let orders = [];
+
+let selectedReviewOrder = null;
+
+let selectedRating = 0;
+
+
+/* =====================================================
+   START
+===================================================== */
+
+document.addEventListener(
+    "DOMContentLoaded",
+    init
+);
+
+
+async function init(){
+
+    try{
+
+        if(!db){
+
+            throw new Error(
+                "Supabase client is unavailable."
+            );
+
+        }
+
+
+        const {
+            data,
+            error
+        } = await db.auth.getUser();
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        currentUser =
+            data.user;
+
+
+        /*
+           IMPORTANT:
+           Do not leave a logged-out customer on
+           "Loading..." and do not show an alert.
+
+           Instead, show the beautiful Sign In screen.
+        */
+        if(!currentUser){
+
+            document.getElementById("accountMain").style.display = "none";
+            document.getElementById("guestView").style.display = "block";
+
+            const accountNav = document.getElementById("accountNav");
+
+            if(accountNav){
+                accountNav.textContent = "🔐 Sign In";
+                accountNav.href = "login.html?redirect=account.html";
+            }
+
+            return;
+        }
+
+
+        document.getElementById("accountMain").style.display = "block";
+        document.getElementById("guestView").style.display = "none";
+
+        const accountNav = document.getElementById("accountNav");
+
+        if(accountNav){
+            accountNav.textContent = "👤 Account";
+            accountNav.href = "account.html";
+        }
+
+
+        document.getElementById(
+            "userEmail"
+        ).textContent =
+            currentUser.email || "";
+
+
+        await loadProfile();
+
+        await loadOrders();
+
+        await loadCart();
+
+        await loadWishlist();
+
+        await loadReviews();
+
+        await loadAddress();
+
+
+    }catch(error){
+
+        console.error(
+            "Account error:",
+            error
+        );
+
+        const accountMain = document.getElementById("accountMain");
+        const guestView = document.getElementById("guestView");
+
+        if(accountMain){
+            accountMain.style.display = "none";
+        }
+
+        if(guestView){
+            guestView.style.display = "block";
+        }
+
+        const accountNav = document.getElementById("accountNav");
+
+        if(accountNav){
+            accountNav.textContent = "🔐 Sign In";
+            accountNav.href = "login.html?redirect=account.html";
+        }
+
+    }
+
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+async function loadProfile(){
+
+    try{
+
+        const {
+            data,
+            error
+        } = await db
+            .from("profiles")
+            .select("*")
+            .eq(
+                "id",
+                currentUser.id
+            )
+            .maybeSingle();
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        const name =
+            data?.full_name ||
+            data?.name ||
+            currentUser.user_metadata?.full_name ||
+            currentUser.user_metadata?.name ||
+            currentUser.email?.split("@")[0] ||
+            "Customer";
+
+
+        document.getElementById(
+            "userName"
+        ).textContent =
+            name;
+
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name
+                .charAt(0)
+                .toUpperCase();
+
+
+    }catch(error){
+
+        console.warn(
+            "Profile error:",
+            error
+        );
+
+
+        const name =
+            currentUser.email?.split("@")[0] ||
+            "Customer";
+
+
+        document.getElementById(
+            "userName"
+        ).textContent =
+            name;
+
+
+        document.getElementById(
+            "avatar"
+        ).textContent =
+            name
+                .charAt(0)
+                .toUpperCase();
+
+    }
+
+}
+
+
+/* =====================================================
+   ORDERS
+===================================================== */
+
+async function loadOrders(){
+
+    const box =
+        document.getElementById(
+            "ordersContainer"
+        );
+
+
+    try{
+
+        const {
+            data,
+            error
+        } = await db
+            .from("orders")
+            .select(
+                "*, order_items(*)"
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        orders =
+            data || [];
+
+
+        document.getElementById(
+            "ordersCount"
+        ).textContent =
+            orders.length;
+
+
+        if(!orders.length){
+
+            box.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        📦
+                    </div>
+
+                    <h3>
+                        No orders yet
+                    </h3>
+
+                    <p>
+                        Your orders will appear here.
+                    </p>
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        box.innerHTML =
+            orders
+                .map(renderOrder)
+                .join("");
+
+
+    }catch(error){
+
+        console.error(
+            "Orders error:",
+            error
+        );
+
+
+        box.innerHTML = `
+
+            <div class="empty">
+
+                <div class="empty-icon">
+                    ⚠️
+                </div>
+
+                <p>
+                    ${esc(error.message)}
+                </p>
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   RENDER ORDER
+===================================================== */
+
+function renderOrder(order){
+
+    const items =
+        Array.isArray(
+            order.order_items
+        )
+        ?
+        order.order_items
+        :
+        [];
+
+
+    const orderNumber =
+        order.order_number ||
+        order.order_id ||
+        order.id;
+
+
+    const status =
+        order.status ||
+        "Placed";
+
+
+    const total =
+        Number(
+            order.total || 0
+        );
+
+
+    const payment =
+        order.payment_method ||
+        order.payment ||
+        "COD";
+
+
+    const itemCount =
+        items.reduce(
+            (sum,item) =>
+                sum +
+                Number(
+                    item.quantity || 1
+                ),
+            0
+        );
+
+
+    const canReview =
+        status === "Delivered";
+
+
+    const canCancel =
+        status !== "Delivered" &&
+        status !== "Cancelled";
+
+
+    return `
+
+        <div class="order">
+
+
+            <div class="order-head">
+
+                <div>
+
+                    <div class="order-number">
+
+                        📦 Order #${esc(
+                            orderNumber
+                        )}
+
+                    </div>
+
+
+                    <div class="order-date">
+
+                        🕒
+
+                        ${
+                            order.created_at
+                            ?
+                            new Date(
+                                order.created_at
+                            ).toLocaleString()
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="status ${statusClass(status)}"
+                >
+                    ${esc(status)}
+                </div>
+
+            </div>
+
+
+
+            <div class="order-info">
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Order ID
+                    </div>
+
+                    <div class="info-value">
+                        ${esc(orderNumber)}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Items
+                    </div>
+
+                    <div class="info-value">
+                        📦 ${itemCount}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Payment
+                    </div>
+
+                    <div class="info-value">
+                        ${esc(payment)}
+                    </div>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <div class="info-label">
+                        Total
+                    </div>
+
+                    <div class="info-value">
+                        ₹${money(total)}
+                    </div>
+
+                </div>
+
+
+            </div>
+
+
+            ${
+                items
+                    .map(renderItem)
+                    .join("")
+            }
+
+
+            <div class="order-bottom">
+
+
+                <div class="total">
+
+                    Total:
+                    ₹${money(total)}
+
+                </div>
+
+
+                <div class="actions">
+
+
+                    <button
+                        class="btn blue"
+                        onclick="trackOrder('${js(order.id)}')"
+                    >
+                        🚚 Track Order
+                    </button>
+
+
+                    ${
+                        canReview
+                        ?
+                        `
+                        <button
+                            class="btn yellow"
+                            onclick="openReview('${js(order.id)}')"
+                        >
+                            ⭐ Review Order
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
+
+                    <button
+                        class="btn blue"
+                        onclick="showInvoice('${js(order.id)}')"
+                    >
+                        🧾 Invoice
+                    </button>
+
+
+                    ${
+                        canCancel
+                        ?
+                        `
+                        <button
+                            class="btn red"
+                            onclick="cancelOrder('${js(order.id)}')"
+                        >
+                            ❌ Cancel
+                        </button>
+                        `
+                        :
+                        ""
+                    }
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   ORDER ITEM
+===================================================== */
+
+function renderItem(item){
+
+    const name =
+        item.product_name ||
+        item.name ||
+        item.title ||
+        "Product";
+
+
+    const quantity =
+        Number(
+            item.quantity || 1
+        );
+
+
+    const price =
+        Number(
+            item.price || 0
+        );
+
+
+    const image =
+        item.image ||
+        item.product_image ||
+        "";
+
+
+    return `
+
+        <div class="order-item">
+
+            ${
+                image
+                ?
+                `
+                <img
+                    class="item-image"
+                    src="${esc(image)}"
+                    onerror="
+                        this.style.display='none'
+                    "
+                >
+                `
+                :
+                `
+                <div class="item-placeholder">
+                    📦
+                </div>
+                `
+            }
+
+
+            <div class="item-info">
+
+                <div class="item-name">
+                    ${esc(name)}
+                </div>
+
+                <div class="item-meta">
+
+                    Quantity:
+                    ${quantity}
+
+                    •
+                    ₹${money(price)}
+
+                </div>
+
+            </div>
+
+
+            <div class="item-price">
+
+                ₹${money(
+                    price * quantity
+                )}
+
+            </div>
+
+        </div>
+
+    `;
+
+}
+
+
+/* =====================================================
+   CART
+===================================================== */
+
+async function loadCart(){
+
+    try{
+
+        const {
+            data,
+            error
+        } = await db
+            .from("cart_items")
+            .select("quantity")
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        const count =
+            (data || [])
+                .reduce(
+                    (sum,item) =>
+                        sum +
+                        Number(
+                            item.quantity || 0
+                        ),
+                    0
+                );
+
+
+        document.getElementById(
+            "cartCount"
+        ).textContent =
+            count;
+
+
+        document.getElementById(
+            "cartStat"
+        ).textContent =
+            count;
+
+
+    }catch(error){
+
+        console.warn(
+            "Cart error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   WISHLIST
+===================================================== */
+
+async function loadWishlist(){
+
+    try{
+
+        const {
+            data,
+            error
+        } = await db
+            .from("wishlist_items")
+            .select("id")
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        const count =
+            (data || []).length;
+
+
+        document.getElementById(
+            "wishlistCount"
+        ).textContent =
+            count;
+
+
+        document.getElementById(
+            "wishlistStat"
+        ).textContent =
+            count;
+
+
+    }catch(error){
+
+        /*
+           If wishlist_items has not yet
+           been created, don't break the
+           whole account page.
+        */
+
+        console.warn(
+            "Wishlist error:",
+            error
+        );
+
+
+        document.getElementById(
+            "wishlistCount"
+        ).textContent =
+            "0";
+
+
+        document.getElementById(
+            "wishlistStat"
+        ).textContent =
+            "0";
+
+    }
+
+}
+
+
+/* =====================================================
+   REVIEWS
+===================================================== */
+
+async function loadReviews(){
+
+    try{
+
+        const {
+            count,
+            error
+        } = await db
+            .from("reviews")
+            .select(
+                "id",
+                {
+                    count:"exact",
+                    head:true
+                }
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        document.getElementById(
+            "reviewsCount"
+        ).textContent =
+            count || 0;
+
+
+    }catch(error){
+
+        console.warn(
+            "Review count error:",
+            error
+        );
+
+
+        document.getElementById(
+            "reviewsCount"
+        ).textContent =
+            "0";
+
+    }
+
+}
+
+
+/* =====================================================
+   ADDRESS
+===================================================== */
+
+async function loadAddress(){
+
+    const box =
+        document.getElementById(
+            "addressContainer"
+        );
+
+
+    try{
+
+        const {
+            data,
+            error
+        } = await db
+            .from("addresses")
+            .select("*")
+            .eq(
+                "user_id",
+                currentUser.id
+            )
+            .order(
+                "created_at",
+                {
+                    ascending:false
+                }
+            )
+            .limit(1)
+            .maybeSingle();
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        if(!data){
+
+            box.innerHTML = `
+
+                <div class="empty">
+
+                    <div class="empty-icon">
+                        📍
+                    </div>
+
+                    No saved address
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        box.innerHTML = `
+
+            <div class="address">
+
+                <div class="address-title">
+
+                    ${esc(
+                        data.name ||
+                        data.full_name ||
+                        "Delivery Address"
+                    )}
+
+                </div>
+
+
+                ${
+                    data.phone
+                    ?
+                    `
+                    <p>
+                        📞
+                        ${esc(data.phone)}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+
+                ${
+                    data.address_line
+                    ?
+                    `
+                    <p>
+                        🏠
+                        ${esc(
+                            data.address_line
+                        )}
+                    </p>
+                    `
+                    :
+                    ""
+                }
+
+
+                <p>
+
+                    ${esc(
+                        data.city || ""
+                    )}
+
+                    ${
+                        data.state
+                        ?
+                        ", " +
+                        esc(data.state)
+                        :
+                        ""
+                    }
+
+                    ${
+                        data.pincode
+                        ?
+                        " - " +
+                        esc(data.pincode)
+                        :
+                        ""
+                    }
+
+                </p>
+
+            </div>
+
+        `;
+
+
+    }catch(error){
+
+        console.warn(
+            "Address error:",
+            error
+        );
+
+
+        box.innerHTML = `
+
+            <div class="empty">
+
+                Address not available
+
+            </div>
+
+        `;
+
+    }
+
+}
+
+
+/* =====================================================
+   TRACKING
+===================================================== */
+
+function trackOrder(orderId){
+
+    const order =
+        orders.find(
+            item =>
+                String(item.id) ===
+                String(orderId)
+        );
+
+
+    if(!order){
+
+        alert(
+            "Order not found."
+        );
+
+        return;
+
+    }
+
+
+    const status =
+        order.status ||
+        "Placed";
+
+
+    document.getElementById(
+        "trackOrderTitle"
+    ).innerHTML = `
+
+        <h3>
+            Order #
+            ${esc(
+                order.order_number ||
+                order.id
+            )}
+        </h3>
+
+        <p>
+            Current status:
+            <strong>
+                ${esc(status)}
+            </strong>
+        </p>
+
+    `;
+
+
+    const steps = [
+
+        "Placed",
+
+        "Confirmed",
+
+        "Shipped",
+
+        "Out for Delivery",
+
+        "Delivered"
+
+    ];
+
+
+    let index =
+        steps.indexOf(status);
+
+
+    if(index < 0){
+
+        index = 0;
+
+    }
+
+
+    document
+        .querySelectorAll(
+            ".track-step"
+        )
+        .forEach(
+            step => {
+
+                const i =
+                    steps.indexOf(
+                        step.dataset.step
+                    );
+
+
+                step.classList.toggle(
+                    "active",
+                    i <= index
+                );
+
+            }
+        );
+
+
+    document.getElementById(
+        "trackModal"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   CANCEL ORDER
+===================================================== */
+
+async function cancelOrder(
+    orderId
+){
+
+    const order =
+        orders.find(
+            item =>
+                String(item.id) ===
+                String(orderId)
+        );
+
+
+    if(!order){
+
+        alert(
+            "Order not found."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        order.status ===
+        "Delivered"
+    ){
+
+        alert(
+            "Delivered orders cannot be cancelled."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        order.status ===
+        "Cancelled"
+    ){
+
+        alert(
+            "This order is already cancelled."
+        );
+
+        return;
+
+    }
+
+
+    if(
+        !confirm(
+            "Are you sure you want to cancel this order?"
+        )
+    ){
+
+        return;
+
+    }
+
+
+    try{
+
+        const {
+            error
+        } = await db
+            .from("orders")
+            .update({
+                status:"Cancelled"
+            })
+            .eq(
+                "id",
+                order.id
+            )
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+        if(error){
+
+            throw error;
+
+        }
+
+
+        alert(
+            "Order cancelled successfully."
+        );
+
+
+        await loadOrders();
+
+
+    }catch(error){
+
+        console.error(
+            "Cancel error:",
+            error
+        );
+
+
+        alert(
+            "Could not cancel order:\n\n" +
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   REVIEW
+===================================================== */
+
+function openReview(
+    orderId
+){
+
+    selectedReviewOrder =
+        orders.find(
+            order =>
+                String(order.id) ===
+                String(orderId)
+        );
+
+
+    if(!selectedReviewOrder){
+
+        alert(
+            "Order not found."
+        );
+
+        return;
+
+    }
+
+
+    const items =
+        selectedReviewOrder.order_items ||
+        [];
+
+
+    if(!items.length){
+
+        alert(
+            "No products found in this order."
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "reviewProduct"
+    ).innerHTML =
+
+        items
+            .map(
+                (item,index) => {
+
+                    const name =
+                        item.product_name ||
+                        item.name ||
+                        item.title ||
+                        "Product";
+
+
+                    return `
+
+                        <option value="${index}">
+                            ${esc(name)}
+                        </option>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    document.getElementById(
+        "reviewText"
+    ).value = "";
+
+
+    selectedRating = 0;
+
+    updateStars();
+
+
+    document.getElementById(
+        "reviewModal"
+    ).classList.add(
+        "show"
+    );
+
+}
+
+
+/* =====================================================
+   RATING
+===================================================== */
+
+function setRating(r){
+
+    selectedRating = r;
+
+    updateStars();
+
+}
+
+
+function updateStars(){
+
+    document
+        .querySelectorAll(
+            ".star"
+        )
+        .forEach(
+            star => {
+
+                star.classList.toggle(
+                    "active",
+                    Number(
+                        star.dataset.rating
+                    ) <= selectedRating
+                );
+
+            }
+        );
+
+
+    const text = {
+
+        1:"⭐ Poor",
+
+        2:"⭐⭐ Fair",
+
+        3:"⭐⭐⭐ Good",
+
+        4:"⭐⭐⭐⭐ Very Good",
+
+        5:"⭐⭐⭐⭐⭐ Excellent"
+
+    };
+
+
+    document.getElementById(
+        "ratingText"
+    ).textContent =
+        text[selectedRating] ||
+        "Select a rating";
+
+}
+
+
+/* =====================================================
+   SUBMIT REVIEW
+===================================================== */
+
+async function submitReview(){
+
+    if(!selectedReviewOrder){
+
+        alert(
+            "Order not selected."
+        );
+
+        return;
+
+    }
+
+
+    if(selectedRating < 1){
+
+        alert(
+            "Please select a rating."
+        );
+
+        return;
+
+    }
+
+
+    const reviewText =
+        document
+            .getElementById(
+                "reviewText"
+            )
+            .value
+            .trim();
+
+
+    if(!reviewText){
+
+        alert(
+            "Please write your review."
+        );
+
+        return;
+
+    }
+
+
+    const index =
+        Number(
+            document
+                .getElementById(
+                    "reviewProduct"
+                )
+                .value
+        );
+
+
+    const item =
+        selectedReviewOrder
+            .order_items[index];
+
+
+    if(!item){
+
+        alert(
+            "Product not found."
+        );
+
+        return;
+
+    }
+
+
+    const productName =
+        item.product_name ||
+        item.name ||
+        item.title;
+
+
+    const productId =
+        item.product_id ||
+        item.productId ||
+        item.id;
+
+
+    if(!productId){
+
+        alert(
+            "This order item does not contain product_id."
+        );
+
+        return;
+
+    }
+
+
+    const review = {
+
+        user_id:
+            currentUser.id,
+
+        order_id:
+            selectedReviewOrder.id,
+
+        product_id:
+            productId,
+
+        product_name:
+            productName,
+
+        rating:
+            selectedRating,
+
+        review_text:
+            reviewText,
+
+        comment:
+            reviewText
+
+    };
+
+
+    const button =
+        document.getElementById(
+            "submitReviewButton"
+        );
+
+
+    button.disabled = true;
+
+    button.textContent =
+        "Saving Review...";
+
+
+    try{
+
+        const {
+            data:existingReview,
+            error:findError
+        } = await db
+            .from("reviews")
+            .select("id")
+            .eq(
+                "order_id",
+                selectedReviewOrder.id
+            )
+            .eq(
+                "product_id",
+                productId
+            )
+            .maybeSingle();
+
+
+        if(findError){
+
+            throw findError;
+
+        }
+
+
+        if(existingReview){
+
+            const {
+                error
+            } = await db
+                .from("reviews")
+                .update({
+
+                    rating:
+                        selectedRating,
+
+                    review_text:
+                        reviewText,
+
+                    comment:
+                        reviewText,
+
+                    product_name:
+                        productName
+
+                })
+                .eq(
+                    "id",
+                    existingReview.id
+                )
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            alert(
+                "⭐ Your review was updated successfully!"
+            );
+
+        }else{
+
+            const {
+                error
+            } = await db
+                .from("reviews")
+                .insert(
+                    review
+                );
+
+
+            if(error){
+
+                throw error;
+
+            }
+
+
+            alert(
+                "⭐ Review submitted successfully!"
+            );
+
+        }
+
+
+        closeModal(
+            "reviewModal"
+        );
+
+
+        await loadReviews();
+
+
+    }catch(error){
+
+        console.error(
+            "Review error:",
+            error
+        );
+
+
+        alert(
+            "Could not submit review:\n\n" +
+            error.message
+        );
+
+
+    }finally{
+
+        button.disabled = false;
+
+        button.textContent =
+            "⭐ Submit Review";
+
+    }
+
+}
+
+
+/* =====================================================
+   INVOICE
+===================================================== */
+
+function showInvoice(
+    orderId
+){
+
+    const order =
+        orders.find(
+            item =>
+                String(item.id) ===
+                String(orderId)
+        );
+
+
+    if(!order){
+
+        alert(
+            "Order not found."
+        );
+
+        return;
+
+    }
+
+
+    const items =
+        order.order_items || [];
+
+
+    const orderNumber =
+        order.order_number ||
+        order.order_id ||
+        order.id;
+
+
+    const date =
+        order.created_at
+        ?
+        new Date(
+            order.created_at
+        )
+        :
+        new Date();
+
+
+    const payment =
+        order.payment_method ||
+        order.payment ||
+        "COD";
+
+
+    const total =
+        Number(
+            order.total || 0
+        );
+
+
+    const customerName =
+        order.address_name ||
+        order.name ||
+        currentUser.email
+            .split("@")[0];
+
+
+    const rows =
+        items
+            .map(
+                (item,index) => {
+
+                    const name =
+                        item.product_name ||
+                        item.name ||
+                        item.title ||
+                        "Product";
+
+
+                    const qty =
+                        Number(
+                            item.quantity || 1
+                        );
+
+
+                    const price =
+                        Number(
+                            item.price || 0
+                        );
+
+
+                    return `
+
+                        <tr>
+
+                            <td>
+                                ${index + 1}
+                            </td>
+
+                            <td>
+                                <b>
+                                    ${esc(name)}
+                                </b>
+                            </td>
+
+                            <td>
+                                ${qty}
+                            </td>
+
+                            <td>
+                                ₹${money(price)}
+                            </td>
+
+                            <td>
+                                ₹${money(
+                                    price * qty
+                                )}
+                            </td>
+
+                        </tr>
+
+                    `;
+
+                }
+            )
+            .join("");
+
+
+    const invoiceHTML = `
+
+        <!DOCTYPE html>
+
+        <html>
+
+        <head>
+
+        <meta charset="UTF-8">
+
+        <title>
+            MaatrixKart Invoice
+        </title>
+
+        <style>
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:Arial;
+            padding:30px;
+            color:#111;
+        }
+
+        .invoice{
+            max-width:850px;
+            margin:auto;
+        }
+
+        .top{
+            display:flex;
+            justify-content:space-between;
+        }
+
+        .logo{
+            font-size:32px;
+            font-weight:900;
+            color:#2874f0;
+        }
+
+        .title{
+            text-align:right;
+        }
+
+        .line{
+            height:4px;
+            background:#2874f0;
+            margin:20px 0;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            margin-top:25px;
+        }
+
+        th,
+        td{
+            padding:12px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+        }
+
+        .total{
+            text-align:right;
+            margin-top:20px;
+            font-size:20px;
+            font-weight:bold;
+        }
+
+        @media print{
+            body{
+                padding:0;
+            }
+        }
+
+        </style>
+
+        </head>
+
+        <body>
+
+        <div class="invoice">
+
+            <div class="top">
+
+                <div class="logo">
+                    MaatrixKart
+                </div>
+
+                <div class="title">
+
+                    <h1>
+                        INVOICE
+                    </h1>
+
+                    <div>
+                        Order #${esc(
+                            orderNumber
+                        )}
+                    </div>
+
+                    <div>
+                        ${esc(
+                            date.toLocaleString()
+                        )}
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="line"></div>
+
+
+            <p>
+                <b>Customer:</b>
+                ${esc(customerName)}
+            </p>
+
+
+            <p>
+                <b>Email:</b>
+                ${esc(currentUser.email)}
+            </p>
+
+
+            <p>
+                <b>Payment:</b>
+                ${esc(payment)}
+            </p>
+
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            #
+                        </th>
+
+                        <th>
+                            Product
+                        </th>
+
+                        <th>
+                            Qty
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Total
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    ${rows}
+
+                </tbody>
+
+            </table>
+
+
+            <div class="total">
+
+                Grand Total:
+                ₹${money(total)}
+
+            </div>
+
+
+            <p
+                style="
+                margin-top:40px;
+                color:#666;
+                "
+            >
+                Thank you for shopping with MaatrixKart.
+            </p>
+
+        </div>
+
+
+        <script>
+
+        window.onload=function(){
+
+            setTimeout(
+                function(){
+
+                    window.print();
+
+                },
+                500
+            );
+
+        };
+
+        <\/script>
+
+        </body>
+
+        </html>
+
+    `;
+
+
+    const win =
+        window.open(
+            "",
+            "_blank",
+            "width=1000,height=800"
+        );
+
+
+    if(!win){
+
+        alert(
+            "Please allow pop-ups for the invoice."
+        );
+
+        return;
+
+    }
+
+
+    win.document.open();
+
+    win.document.write(
+        invoiceHTML
+    );
+
+    win.document.close();
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+    try{
+
+        await db.auth.signOut();
+
+    }catch(error){
+
+        console.error(
+            "Logout error:",
+            error
+        );
+
+    }
+
+
+    location.href =
+        "login.html";
+
+}
+
+
+/* =====================================================
+   SEARCH
+===================================================== */
+
+function searchProduct(e){
+
+    if(
+        e.key !== "Enter"
+    ){
+
+        return;
+
+    }
+
+
+    const value =
+        e.target.value.trim();
+
+
+    if(value){
+
+        location.href =
+            "index.html?search=" +
+            encodeURIComponent(
+                value
+            );
+
+    }
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .classList.remove(
+            "show"
+        );
+
+}
+
+
+document.addEventListener(
+    "click",
+    function(e){
+
+        if(
+            e.target.classList.contains(
+                "modal"
+            )
+        ){
+
+            e.target.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================================
+   HELPERS
+===================================================== */
+
+function money(value){
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "en-IN",
+        {
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+function statusClass(status){
+
+    if(
+        status ===
+        "Out for Delivery"
+    ){
+
+        return "Out";
+
+    }
+
+
+    return String(status)
+        .replace(
+            /\s+/g,
+            ""
+        );
+
+}
+
+
+function esc(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /&/g,
+        "&amp;"
+    )
+    .replace(
+        /</g,
+        "&lt;"
+    )
+    .replace(
+        />/g,
+        "&gt;"
+    )
+    .replace(
+        /"/g,
+        "&quot;"
+    )
+    .replace(
+        /'/g,
+        "&#039;"
+    );
+
+}
+
+
+function js(value){
+
+    return String(
+        value ?? ""
+    )
+    .replace(
+        /\\/g,
+        "\\\\"
+    )
+    .replace(
+        /'/g,
+        "\\'"
+    );
+
+}
+
+</script>
+
+</body>
+
+</html>

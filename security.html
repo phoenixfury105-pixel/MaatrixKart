@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MaatrixKart — Security</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<style>
+*{box-sizing:border-box}
+:root{
+ --bg:#070a12;--text:#f6f8ff;--muted:#aeb8cc;
+ --border:rgba(255,255,255,.14);--blue:#4d8dff;--purple:#9b6cff;
+ --green:#36d98b;--red:#ff667d
+}
+body{
+ margin:0;min-height:100vh;color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;
+ background:
+ radial-gradient(circle at 8% 5%,rgba(45,105,255,.23),transparent 30%),
+ radial-gradient(circle at 92% 7%,rgba(145,70,255,.22),transparent 30%),
+ radial-gradient(circle at 50% 100%,rgba(0,180,255,.12),transparent 40%),var(--bg)
+}
+button,input{font:inherit}
+.glass{
+ background:linear-gradient(135deg,rgba(255,255,255,.105),rgba(255,255,255,.035));
+ border:1px solid var(--border);box-shadow:0 22px 70px rgba(0,0,0,.42);
+ backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px)
+}
+header{
+ position:sticky;top:0;z-index:20;padding:14px 5%;display:flex;align-items:center;
+ justify-content:space-between;gap:18px;background:rgba(7,10,18,.72);
+ border-bottom:1px solid rgba(255,255,255,.1);backdrop-filter:blur(24px)
+}
+.logo{font-size:24px;font-weight:900}.logo span{
+ background:linear-gradient(90deg,#55a1ff,#a36cff);-webkit-background-clip:text;background-clip:text;color:transparent
+}
+.nav{display:flex;gap:9px;flex-wrap:wrap}.nav a{
+ color:var(--text);text-decoration:none;padding:9px 13px;border-radius:14px;
+ border:1px solid var(--border);background:rgba(255,255,255,.055)
+}
+main{width:min(900px,92%);margin:38px auto 70px}
+h1{font-size:34px;margin:0 0 8px}.intro{color:var(--muted);margin:0 0 25px}
+.card{padding:23px;border-radius:25px;margin-bottom:20px}
+.title{font-size:21px;font-weight:850;margin:0 0 10px}
+.muted{color:var(--muted);line-height:1.55}
+.status{
+ display:inline-flex;padding:9px 13px;border-radius:13px;font-weight:850;
+ margin:12px 0;background:rgba(255,255,255,.06);border:1px solid var(--border)
+}
+.status.on{color:#7af0b5;background:rgba(54,217,139,.1);border-color:rgba(54,217,139,.25)}
+.status.off{color:#ffb0ba}
+.btn{
+ border:1px solid var(--border);border-radius:14px;padding:12px 16px;color:white;
+ background:rgba(255,255,255,.07);font-weight:800;cursor:pointer
+}
+.btn.primary{background:linear-gradient(135deg,#377dff,#8d55ff);border:0}
+.btn.danger{color:#ff9bab;background:rgba(255,80,105,.1);border-color:rgba(255,80,105,.25)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}
+.factor{
+ display:flex;align-items:center;justify-content:space-between;gap:15px;
+ padding:15px;border-radius:17px;border:1px solid var(--border);background:rgba(255,255,255,.045)
+}
+.factor-name{font-weight:850}.factor-meta{color:var(--muted);font-size:13px;margin-top:4px}
+.qr-wrap{text-align:center;padding:18px;background:#fff;border-radius:18px;margin:15px auto;width:max-content}
+.qr-wrap img{display:block;width:220px;height:220px}
+.secret{
+ word-break:break-all;padding:12px;border-radius:12px;background:rgba(0,0,0,.2);
+ border:1px solid var(--border);font-family:monospace;color:#dbe5ff
+}
+.field{margin-top:15px}.field label{display:block;color:#dbe3f3;font-weight:700;font-size:13px;margin-bottom:7px}
+.field input{
+ width:100%;padding:13px;border-radius:13px;border:1px solid var(--border);
+ background:rgba(0,0,0,.2);color:white;outline:none;letter-spacing:5px;text-align:center
+}
+.field input:focus{border-color:#6d9cff;box-shadow:0 0 0 3px rgba(77,141,255,.1)}
+.message{min-height:20px;margin-top:12px;font-size:14px}.success{color:var(--green)}.error{color:#ff9bab}
+.loading{text-align:center;padding:45px;color:var(--muted)}
+.spinner{
+ display:inline-block;width:19px;height:19px;border:3px solid rgba(255,255,255,.2);
+ border-top-color:white;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.modal{
+ position:fixed;inset:0;z-index:100;display:none;align-items:center;justify-content:center;
+ padding:18px;background:rgba(0,0,0,.68);backdrop-filter:blur(10px)
+}
+.modal.show{display:flex}.modal-box{width:min(500px,100%);border-radius:24px;padding:23px}
+@media(max-width:600px){
+ header{padding:12px 4%;align-items:flex-start}.nav a{padding:8px 10px;font-size:13px}
+ main{width:94%;margin-top:25px}.card{padding:18px}.factor{align-items:flex-start;flex-direction:column}
+ h1{font-size:29px}.qr-wrap img{width:190px;height:190px}
+}
+</style>
+</head>
+
+<body>
+<header>
+ <div class="logo">Maatrix<span>Kart</span></div>
+ <nav class="nav">
+  <a href="index.html">Home</a>
+  <a href="account.html">Account</a>
+  <a href="cart.html">🛒 Cart</a>
+ </nav>
+</header>
+
+<main>
+ <h1>🔐 Account Security</h1>
+ <p class="intro">Protect your MaatrixKart account with two-step verification.</p>
+
+ <div id="loading" class="glass card loading"><span class="spinner"></span> Loading security settings...</div>
+ <div id="page" style="display:none">
+
+  <section class="glass card">
+   <h2 class="title">Two-Step Verification</h2>
+   <p class="muted">
+    Use an authenticator app to generate a temporary 6-digit code when signing in.
+    This uses Supabase Auth's TOTP multi-factor authentication.
+   </p>
+   <div id="overallStatus" class="status off">Checking...</div>
+   <div id="factorArea"></div>
+   <div id="enrollArea"></div>
+   <div id="pageMessage" class="message"></div>
+  </section>
+
+  <section class="glass card">
+   <h2 class="title">How it works</h2>
+   <p class="muted">
+    1. Start setup.<br>
+    2. Scan the QR code with an authenticator app.<br>
+    3. Enter the 6-digit code shown by the app.<br>
+    4. Two-step verification becomes active for your account.
+   </p>
+  </section>
+ </div>
+</main>
+
+<div id="verifyModal" class="modal">
+ <div class="modal-box glass">
+  <h2 style="margin-top:0">Verify your authenticator</h2>
+  <p class="muted">Enter the current 6-digit code from your authenticator app.</p>
+  <div class="field">
+   <label for="verifyCode">6-digit code</label>
+   <input id="verifyCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000">
+  </div>
+  <div id="modalMessage" class="message"></div>
+  <div class="actions">
+   <button class="btn" onclick="closeVerifyModal()">Cancel</button>
+   <button id="verifyBtn" class="btn primary" onclick="verifyCurrentFactor()">Verify</button>
+  </div>
+ </div>
+</div>
+
+<script>
+"use strict";
+
+const db=window.db;
+let currentUser=null;
+let currentFactor=null;
+let pendingFactorId=null;
+let pendingChallengeId=null;
+let pendingAction=null;
+
+function esc(v){
+ return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+function setMessage(text,type=""){
+ const el=document.getElementById("pageMessage");
+ el.textContent=text;el.className="message "+type;
+}
+function setModalMessage(text,type=""){
+ const el=document.getElementById("modalMessage");
+ el.textContent=text;el.className="message "+type;
+}
+function openVerifyModal(){
+ document.getElementById("verifyCode").value="";
+ setModalMessage("");
+ document.getElementById("verifyModal").classList.add("show");
+ setTimeout(()=>document.getElementById("verifyCode").focus(),100);
+}
+function closeVerifyModal(){
+ document.getElementById("verifyModal").classList.remove("show");
+ pendingFactorId=null;pendingChallengeId=null;pendingAction=null;
+}
+function digitsOnly(input){
+ input.value=input.value.replace(/\D/g,"").slice(0,6);
+}
+document.getElementById("verifyCode").addEventListener("input",e=>digitsOnly(e.target));
+
+async function loadSecurity(){
+ if(!db)throw new Error("Supabase is not loaded. Check supabase-config.js.");
+
+ const {data,error}=await db.auth.getUser();
+ if(error)throw error;
+ currentUser=data.user;
+ if(!currentUser){
+  location.href="login.html?redirect=security.html";
+  return;
+ }
+
+ await refreshFactors();
+ document.getElementById("loading").style.display="none";
+ document.getElementById("page").style.display="block";
+}
+
+async function refreshFactors(){
+ const {data,error}=await db.auth.mfa.listFactors();
+ if(error)throw error;
+
+ const verified=(data?.totp||[]).filter(f=>f.status==="verified");
+ currentFactor=verified[0]||null;
+
+ const status=document.getElementById("overallStatus");
+ const factorArea=document.getElementById("factorArea");
+ const enrollArea=document.getElementById("enrollArea");
+
+ if(currentFactor){
+  status.textContent="✓ Two-step verification is ON";
+  status.className="status on";
+  factorArea.innerHTML=`
+   <div class="factor">
+    <div>
+     <div class="factor-name">Authenticator app</div>
+     <div class="factor-meta">Verified TOTP factor${currentFactor.friendly_name?" · "+esc(currentFactor.friendly_name):""}</div>
+    </div>
+    <button class="btn danger" onclick="startRemoveFactor()">Remove 2-step verification</button>
+   </div>`;
+  enrollArea.innerHTML="";
+ }else{
+  status.textContent="Two-step verification is OFF";
+  status.className="status off";
+  factorArea.innerHTML="";
+  enrollArea.innerHTML=`
+   <div class="actions">
+    <button class="btn primary" onclick="startEnrollment()">Enable 2-step verification</button>
+   </div>`;
+ }
+}
+
+async function startEnrollment(){
+ setMessage("Creating your authenticator setup...");
+ try{
+  // Remove an old unverified factor if one was left behind.
+  const {data:list,error:listError}=await db.auth.mfa.listFactors();
+  if(listError)throw listError;
+  for(const f of (list?.totp||[])){
+   if(f.status==="unverified"){
+    await db.auth.mfa.unenroll({factorId:f.id});
+   }
+  }
+
+  const {data,error}=await db.auth.mfa.enroll({
+   factorType:"totp",
+   friendlyName:"MaatrixKart Authenticator"
+  });
+  if(error)throw error;
+
+  pendingFactorId=data.id;
+
+  const qr=data.totp?.qr_code;
+  const secret=data.totp?.secret;
+
+  document.getElementById("enrollArea").innerHTML=`
+   <div style="margin-top:20px">
+    <h3 style="margin:0 0 8px">Scan this QR code</h3>
+    <p class="muted">Open a compatible authenticator app and scan the QR code.</p>
+    ${qr?`<div class="qr-wrap"><img src="${esc(qr)}" alt="Authenticator QR code"></div>`:""}
+    ${secret?`
+     <p class="muted">If you cannot scan the QR code, enter this setup key manually:</p>
+     <div class="secret">${esc(secret)}</div>`:""}
+    <div class="field">
+     <label for="setupCode">Enter the 6-digit code from your authenticator</label>
+     <input id="setupCode" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="000000">
+    </div>
+    <div id="enrollMessage" class="message"></div>
+    <div class="actions">
+     <button class="btn" onclick="cancelEnrollment()">Cancel</button>
+     <button id="confirmEnrollBtn" class="btn primary" onclick="confirmEnrollment()">Verify & Enable</button>
+    </div>
+   </div>`;
+
+  document.getElementById("setupCode").addEventListener("input",e=>digitsOnly(e.target));
+  document.getElementById("setupCode").focus();
+  setMessage("");
+ }catch(e){
+  console.error(e);setMessage(e.message||"Could not start 2-step verification.","error");
+ }
+}
+
+async function confirmEnrollment(){
+ const code=document.getElementById("setupCode").value.trim();
+ const msg=document.getElementById("enrollMessage");
+ const btn=document.getElementById("confirmEnrollBtn");
+ if(!pendingFactorId||code.length!==6){
+  msg.textContent="Enter the 6-digit code.";msg.className="message error";return;
+ }
+ btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Verifying...';
+ try{
+  const {data:challenge,error:challengeError}=await db.auth.mfa.challenge({factorId:pendingFactorId});
+  if(challengeError)throw challengeError;
+
+  const {error}=await db.auth.mfa.verify({
+   factorId:pendingFactorId,
+   challengeId:challenge.id,
+   code
+  });
+  if(error)throw error;
+
+  pendingFactorId=null;
+  msg.textContent="Two-step verification enabled successfully.";
+  msg.className="message success";
+  await db.auth.refreshSession();
+  await refreshFactors();
+  setMessage("Two-step verification is now active.","success");
+ }catch(e){
+  console.error(e);
+  msg.textContent=e.message||"The code was incorrect or expired.";
+  msg.className="message error";
+  btn.disabled=false;btn.textContent="Verify & Enable";
+ }
+}
+
+async function cancelEnrollment(){
+ if(pendingFactorId){
+  try{await db.auth.mfa.unenroll({factorId:pendingFactorId});}catch(e){console.warn(e)}
+ }
+ pendingFactorId=null;
+ await refreshFactors();
+ setMessage("");
+}
+
+async function startRemoveFactor(){
+ if(!currentFactor)return;
+
+ pendingFactorId=currentFactor.id;
+ pendingAction="remove";
+
+ try{
+  const {data:aal,error:aalError}=await db.auth.mfa.getAuthenticatorAssuranceLevel();
+  if(aalError)throw aalError;
+
+  if(aal?.currentLevel==="aal2"){
+   openVerifyModal();
+   return;
+  }
+
+  const {data:challenge,error}=await db.auth.mfa.challenge({factorId:currentFactor.id});
+  if(error)throw error;
+  pendingChallengeId=challenge.id;
+  openVerifyModal();
+ }catch(e){
+  console.error(e);
+  setMessage(e.message||"Could not start verification.","error");
+ }
+}
+
+async function verifyCurrentFactor(){
+ const code=document.getElementById("verifyCode").value.trim();
+ const btn=document.getElementById("verifyBtn");
+
+ if(code.length!==6){
+  setModalMessage("Enter the 6-digit code.","error");return;
+ }
+ if(!pendingFactorId){
+  setModalMessage("No verification factor is selected.","error");return;
+ }
+
+ btn.disabled=true;btn.innerHTML='<span class="spinner"></span>Verifying...';
+
+ try{
+  let challengeId=pendingChallengeId;
+
+  if(!challengeId){
+   const {data:challenge,error}=await db.auth.mfa.challenge({factorId:pendingFactorId});
+   if(error)throw error;
+   challengeId=challenge.id;
+  }
+
+  const {error}=await db.auth.mfa.verify({
+   factorId:pendingFactorId,
+   challengeId,
+   code
+  });
+  if(error)throw error;
+
+  if(pendingAction==="remove"){
+   const {error:removeError}=await db.auth.mfa.unenroll({factorId:pendingFactorId});
+   if(removeError)throw removeError;
+
+   await db.auth.refreshSession();
+   closeVerifyModal();
+   await refreshFactors();
+   setMessage("Two-step verification has been removed.","success");
+  }
+ }catch(e){
+  console.error(e);
+  setModalMessage(e.message||"The code was incorrect or expired.","error");
+  btn.disabled=false;btn.textContent="Verify";
+ }
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+ loadSecurity().catch(e=>{
+  console.error(e);
+  document.getElementById("loading").innerHTML=
+   `<span style="color:#ff9bab">${esc(e.message||"Could not load security settings.")}</span>`;
+ });
+});
+</script>
+</body>
+</html>

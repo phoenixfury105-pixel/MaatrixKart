@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product - MaatrixKart</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;color:#172033;background:
+radial-gradient(circle at 8% 5%,rgba(80,140,255,.18),transparent 30%),
+radial-gradient(circle at 92% 8%,rgba(150,100,255,.15),transparent 30%),
+radial-gradient(circle at 50% 100%,rgba(0,180,255,.10),transparent 38%),#eef4fb;
+background-attachment:fixed}
+button,input{font-family:inherit}button{cursor:pointer}
+.header{min-height:68px;background:rgba(255,255,255,.72);backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);display:flex;align-items:center;gap:25px;padding:10px 5%;position:sticky;top:0;z-index:1000;border-bottom:1px solid rgba(20,40,80,.10);box-shadow:0 10px 35px rgba(40,60,100,.12)}
+.logo{font-size:30px;font-weight:800;white-space:nowrap;text-decoration:none;background:linear-gradient(90deg,#1769e8,#6548e8);-webkit-background-clip:text;background-clip:text;color:transparent}.logo span{color:#f0a400}
+.search{flex:1;max-width:650px;height:42px;border:1px solid rgba(30,70,130,.12);border-radius:14px;padding:0 18px;font-size:15px;outline:none;color:#172033;background:rgba(255,255,255,.68);backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);box-shadow:inset 0 1px 0 rgba(255,255,255,.8)}.search::placeholder{color:#77839a}.search:focus{border-color:rgba(60,120,255,.42);background:#fff;box-shadow:0 0 20px rgba(60,120,255,.12)}
+.nav{margin-left:auto;display:flex;align-items:center;gap:8px;white-space:nowrap}.nav a{color:#172033;text-decoration:none;font-weight:bold;padding:9px 12px;border-radius:12px;transition:.2s}.nav a:hover{background:rgba(50,100,190,.09);transform:translateY(-1px)}
+.badge{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;background:linear-gradient(135deg,#ff416c,#ff304f);color:white;border-radius:50%;font-size:12px;box-shadow:0 4px 12px rgba(255,50,80,.25)}
+.container{width:92%;max-width:1180px;margin:25px auto 60px}
+.back{display:inline-flex;align-items:center;margin-bottom:18px;color:#2563c7;font-weight:bold;text-decoration:none;padding:9px 13px;border-radius:12px;background:rgba(255,255,255,.65);border:1px solid rgba(30,70,130,.10);transition:.2s}.back:hover{background:#fff;transform:translateX(-2px)}
+.product-card,.reviews-card,.info-section{background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.52));backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(30,60,110,.10);box-shadow:0 25px 60px rgba(40,60,100,.12),inset 0 1px 0 rgba(255,255,255,.9)}
+.product-card{border-radius:25px;padding:30px;display:grid;grid-template-columns:45% 55%;gap:35px}
+.image-section{display:flex;align-items:center;justify-content:center;min-height:450px;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.92),rgba(235,243,253,.72));border:1px solid rgba(30,60,110,.08);border-radius:20px;position:relative;overflow:hidden}.image-section::before{content:"";position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(80,140,255,.10);filter:blur(50px)}
+.product-image{width:90%;max-width:470px;max-height:450px;object-fit:contain;position:relative;z-index:1;transition:.3s}.product-image:hover{transform:scale(1.035)}
+.wishlist-button{position:absolute;top:18px;right:18px;width:50px;height:50px;border:1px solid rgba(30,60,110,.12);border-radius:50%;background:rgba(255,255,255,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:0 8px 25px rgba(40,60,100,.16);font-size:28px;color:#ff4f79;z-index:5;transition:.2s}.wishlist-button:hover{transform:scale(1.08);background:rgba(255,60,100,.10)}
+.details{padding:10px 5px}.category{color:#2563c7;font-size:13px;font-weight:bold;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}.product-name{font-size:31px;margin:0 0 15px;line-height:1.25;color:#172033}
+.rating-box{display:flex;align-items:center;gap:10px;margin-bottom:18px}.rating{background:linear-gradient(135deg,#0aa05b,#087d47);color:white;border-radius:8px;padding:6px 10px;font-weight:bold}.review-link{color:#66738a}
+.price{font-size:32px;font-weight:bold;margin:20px 0 8px;color:#172033}.old-price{color:#7e899f;text-decoration:line-through;font-size:18px;margin-left:10px;font-weight:normal}.discount{color:#07854d;font-size:15px;margin-left:10px;font-weight:bold}
+.description{color:#536078;line-height:1.7;margin:20px 0}.stock{font-weight:bold;margin:15px 0}.in-stock{color:#087d47}.low-stock{color:#b06a00}.out-stock{color:#d62839}
+.actions{display:flex;gap:12px;margin-top:25px}.action-button{border:1px solid rgba(255,255,255,.3);border-radius:14px;padding:15px 28px;font-weight:bold;font-size:16px;color:white;transition:.25s;box-shadow:0 10px 25px rgba(40,60,100,.18)}.action-button:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 15px 32px rgba(40,60,100,.22)}.cart-button{background:linear-gradient(135deg,#ffad18,#ff7b00)}.buy-button{background:linear-gradient(135deg,#ff6530,#e92d16)}.action-button:disabled{opacity:.45;cursor:not-allowed}
+.reviews-card{margin-top:25px;border-radius:25px;padding:28px}.review-header{display:flex;justify-content:space-between;align-items:center;gap:20px;border-bottom:1px solid rgba(30,60,110,.10);padding-bottom:20px}.review-title{margin:0;font-size:27px;color:#172033}.review-subtitle{color:#66738a;margin:7px 0 0}.summary{text-align:right}.average{font-size:42px;font-weight:bold;color:#172033}.average-stars{color:#d58b00;font-size:21px;letter-spacing:2px}.review-count{color:#7a879b;font-size:13px}
+.rating-bars{margin:25px 0;max-width:600px}.rating-row{display:flex;align-items:center;gap:10px;margin:10px 0}.rating-number{width:30px;color:#334158}.bar{flex:1;height:8px;background:rgba(30,60,110,.10);border-radius:20px;overflow:hidden}.bar-fill{height:100%;background:linear-gradient(90deg,#ffca28,#ff9800);width:0%}.rating-total{width:30px;color:#7a879b}
+.review-list{margin-top:20px}.review{padding:22px 0;border-top:1px solid rgba(30,60,110,.08)}.review-top{display:flex;align-items:center;justify-content:space-between;gap:15px}.customer-name{font-weight:bold;color:#172033}.review-stars{color:#d58b00;letter-spacing:2px}.review-date{color:#7f8ba1;font-size:12px;margin-top:5px}.review-text{margin:12px 0 0;line-height:1.6;color:#536078}.no-reviews{text-align:center;padding:55px 20px;color:#7a879b}.no-reviews-icon{font-size:55px;margin-bottom:10px}.loading{text-align:center;padding:50px;color:#7a879b}
+.info-section{margin-top:25px;border-radius:25px;padding:25px}.info-section h2{margin-top:0;color:#172033}.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.feature{background:rgba(255,255,255,.58);padding:18px;border-radius:16px;border:1px solid rgba(30,60,110,.08);color:#536078}.feature strong{display:block;margin-bottom:5px;color:#172033}
+.toast{position:fixed;right:25px;bottom:25px;background:rgba(255,255,255,.92);color:#172033;padding:15px 20px;border:1px solid rgba(30,60,110,.12);border-radius:14px;display:none;z-index:9999;box-shadow:0 15px 40px rgba(40,60,100,.18);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}.toast.show{display:block}
+::-webkit-scrollbar{width:8px}::-webkit-scrollbar-track{background:#e7eef7}::-webkit-scrollbar-thumb{background:linear-gradient(#3f73dc,#7956d8);border-radius:10px}
+@media(max-width:850px){.header{padding:10px 15px;gap:10px}.logo{font-size:22px}.search{display:none}.nav{gap:4px;font-size:12px}.nav a{padding:8px 7px}.product-card{grid-template-columns:1fr}.image-section{min-height:350px}.feature-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.container{width:96%}.product-card{padding:18px;border-radius:20px}.product-name{font-size:25px}.price{font-size:27px}.actions{flex-direction:column}.action-button{width:100%}.review-header{flex-direction:column;align-items:flex-start}.summary{text-align:left}.reviews-card,.info-section{border-radius:20px;padding:20px}}
+</style>
+</head>
+<body>
+<header class="header">
+<a href="index.html" class="logo">Maatrix<span>Kart</span></a>
+<input class="search" id="searchBox" placeholder="Search for products..." onkeydown="searchProduct(event)">
+<nav class="nav">
+<a href="wishlist.html">♡ Wishlist <span class="badge" id="wishlistCount">0</span></a>
+<a href="cart.html">🛒 Cart <span class="badge" id="cartCount">0</span></a>
+<a href="account.html">Account</a>
+</nav>
+</header>
+
+<main class="container">
+<a href="index.html" class="back">← Back to Store</a>
+<section class="product-card" id="productCard">
+<div class="image-section">
+<button class="wishlist-button" id="wishlistButton" onclick="toggleWishlist()" title="Wishlist">♡</button>
+<img id="productImage" class="product-image" src="" alt="Product">
+</div>
+<div class="details">
+<div id="productCategory" class="category">Loading...</div>
+<h1 id="productName" class="product-name">Loading product...</h1>
+<div class="rating-box"><span id="productRating" class="rating">★ 0.0</span><span id="reviewLink" class="review-link">0 reviews</span></div>
+<div id="productPrice" class="price">₹0</div>
+<div id="productDescription" class="description">Loading product description...</div>
+<div id="stockText" class="stock">Checking stock...</div>
+<div class="actions">
+<button id="cartButton" class="action-button cart-button" onclick="addToCart()">🛒 Add to Cart</button>
+<button id="buyButton" class="action-button buy-button" onclick="buyNow()">⚡ Buy Now</button>
+</div>
+</div>
+</section>
+
+<section class="reviews-card">
+<div class="review-header">
+<div><h2 class="review-title">⭐ Customer Reviews</h2><p class="review-subtitle">See what customers say about this product.</p></div>
+<div class="summary"><div id="averageRating" class="average">0.0</div><div id="averageStars" class="average-stars">☆☆☆☆☆</div><div id="reviewCount" class="review-count">0 reviews</div></div>
+</div>
+<div class="rating-bars">
+<div class="rating-row"><span class="rating-number">5 ⭐</span><div class="bar"><div id="bar5" class="bar-fill"></div></div><span id="count5" class="rating-total">0</span></div>
+<div class="rating-row"><span class="rating-number">4 ⭐</span><div class="bar"><div id="bar4" class="bar-fill"></div></div><span id="count4" class="rating-total">0</span></div>
+<div class="rating-row"><span class="rating-number">3 ⭐</span><div class="bar"><div id="bar3" class="bar-fill"></div></div><span id="count3" class="rating-total">0</span></div>
+<div class="rating-row"><span class="rating-number">2 ⭐</span><div class="bar"><div id="bar2" class="bar-fill"></div></div><span id="count2" class="rating-total">0</span></div>
+<div class="rating-row"><span class="rating-number">1 ⭐</span><div class="bar"><div id="bar1" class="bar-fill"></div></div><span id="count1" class="rating-total">0</span></div>
+</div>
+<div id="reviewList" class="review-list"><div class="loading">Loading reviews...</div></div>
+</section>
+
+<section class="info-section">
+<h2>📋 Product Information</h2>
+<div class="feature-grid">
+<div class="feature"><strong>🛍️ Genuine Product</strong>Quality products from MaatrixKart.</div>
+<div class="feature"><strong>🚚 Delivery</strong>Fast and reliable delivery.</div>
+<div class="feature"><strong>🔒 Secure Shopping</strong>Secure account and order management.</div>
+</div>
+</section>
+</main>
+
+<div id="toast" class="toast">Added to cart</div>
+
+<script>
+const supabaseClient = window.db;
+let currentUser=null, product=null, productId=null, reviews=[];
+
+document.addEventListener("DOMContentLoaded",init);
+
+async function init(){
+try{
+if(!supabaseClient) throw new Error("Supabase is not connected.");
+const params=new URLSearchParams(window.location.search);
+productId=params.get("id")||params.get("product");
+if(!productId){showError("Product ID is missing.");return;}
+productId=decodeURIComponent(productId);
+const {data}=await supabaseClient.auth.getUser();
+currentUser=data?.user||null;
+await loadProduct();
+if(!product)return;
+await loadReviews();
+await updateCartCount();
+await updateWishlistButton();
+await updateWishlistCount();
+}catch(error){console.error("Product page error:",error);showError(error.message);}
+}
+
+async function loadProduct(){
+try{
+const {data,error}=await supabaseClient.from("products").select("*").eq("id",productId).maybeSingle();
+if(!error&&data) product=data;
+}catch(error){console.warn("Supabase product loading failed:",error);}
+if(!product){
+try{
+const products=JSON.parse(localStorage.getItem("maatrixProducts")||"[]");
+product=products.find(p=>String(p.id)===String(productId));
+}catch(error){console.warn("Local product loading failed:",error);}
+}
+if(!product){showError("Product not found.");return;}
+document.title=(product.name||"Product")+" - MaatrixKart";
+const image=product.image||product.image_url||product.thumbnail||product.photo||"https://via.placeholder.com/500x500?text=MaatrixKart";
+document.getElementById("productImage").src=image;
+document.getElementById("productImage").alt=product.name||product.title||"Product";
+document.getElementById("productName").textContent=product.name||product.title||product.product_name||"Product";
+document.getElementById("productCategory").textContent=product.category||product.category_name||"";
+const price=Number(product.price??product.selling_price??0);
+const oldPrice=Number(product.old_price??product.original_price??product.mrp??0);
+let priceHTML="₹"+price.toLocaleString("en-IN");
+if(oldPrice>price){const discount=Math.round(((oldPrice-price)/oldPrice)*100);priceHTML+=` <span class="old-price">₹${oldPrice.toLocaleString("en-IN")}</span><span class="discount">${discount}% off</span>`;}
+document.getElementById("productPrice").innerHTML=priceHTML;
+document.getElementById("productDescription").textContent=product.description||"No description available.";
+updateStock();
+}
+
+function getStock(){
+const raw=product?.stock??product?.quantity??product?.inventory??product?.available_stock??0;
+const n=Number(raw);
+return Number.isFinite(n)?n:0;
+}
+function updateStock(){
+const stock=getStock(),text=document.getElementById("stockText"),cartButton=document.getElementById("cartButton"),buyButton=document.getElementById("buyButton");
+if(stock<=0){text.textContent="❌ Out of stock";text.className="stock out-stock";cartButton.disabled=true;buyButton.disabled=true;}
+else if(stock<=5){text.textContent="⚠️ Only "+stock+" left in stock";text.className="stock low-stock";cartButton.disabled=false;buyButton.disabled=false;}
+else{text.textContent="✓ In stock";text.className="stock in-stock";cartButton.disabled=false;buyButton.disabled=false;}
+}
+
+async function loadReviews(){
+const list=document.getElementById("reviewList");
+try{
+const {data,error}=await supabaseClient.from("reviews").select("*").eq("product_id",String(productId)).order("created_at",{ascending:false});
+if(error) throw error;
+reviews=data||[];
+renderReviewSummary();renderReviews();
+}catch(error){
+console.error("Review loading error:",error);
+list.innerHTML=`<div class="no-reviews"><div class="no-reviews-icon">⚠️</div><h3>Reviews could not be loaded</h3><p>${escapeHTML(error.message)}</p></div>`;
+}
+}
+
+function renderReviewSummary(){
+const total=reviews.length;
+document.getElementById("reviewCount").textContent=total+(total===1?" review":" reviews");
+document.getElementById("reviewLink").textContent=total+(total===1?" review":" reviews");
+for(let rating=1;rating<=5;rating++){const count=reviews.filter(r=>Number(r.rating)===rating).length;document.getElementById("count"+rating).textContent=count;document.getElementById("bar"+rating).style.width=(total?(count/total)*100:0)+"%";}
+if(!total){setAverage(0);return;}
+const average=reviews.reduce((sum,r)=>sum+Number(r.rating||0),0)/total;
+setAverage(average);
+}
+
+function setAverage(average){
+const value=Number(average||0);
+document.getElementById("averageRating").textContent=value.toFixed(1);
+document.getElementById("productRating").innerHTML="★ "+value.toFixed(1);
+document.getElementById("averageStars").textContent=makeStars(value);
+}
+
+function renderReviews(){
+const list=document.getElementById("reviewList");
+if(!reviews.length){list.innerHTML=`<div class="no-reviews"><div class="no-reviews-icon">⭐</div><h3>No reviews yet</h3><p>Be the first customer to review this product.</p></div>`;return;}
+list.innerHTML=reviews.map(renderReview).join("");
+}
+
+function renderReview(review){
+const name=review.customer_name||review.full_name||review.name||"Verified Customer";
+const rating=Number(review.rating||0);
+const text=review.review_text||review.comment||review.content||"";
+const date=review.created_at?new Date(review.created_at).toLocaleDateString("en-IN"):"";
+return `<article class="review"><div class="review-top"><div><div class="customer-name">👤 ${escapeHTML(name)}</div><div class="review-date">${date?"Reviewed on "+escapeHTML(date):""}</div></div><div class="review-stars">${makeStars(rating)}</div></div><div class="review-text">${escapeHTML(text)}</div></article>`;
+}
+function makeStars(rating){const rounded=Math.max(0,Math.min(5,Math.round(Number(rating||0))));let output="";for(let i=1;i<=5;i++)output+=i<=rounded?"★":"☆";return output;}
+
+async function addToCart(){
+if(!product){alert("Product not found.");return;}
+if(getStock()<=0){alert("This product is out of stock.");return;}
+if(!currentUser){alert("Please login before adding products to your cart.");location.href="login.html";return;}
+try{
+const {data:existing,error:findError}=await supabaseClient.from("cart_items").select("*").eq("user_id",currentUser.id).eq("product_id",product.id).maybeSingle();
+if(findError)throw findError;
+if(existing){
+const quantity=Number(existing.quantity||0)+1;
+if(quantity>getStock()){alert("Only "+getStock()+" items are available.");return;}
+const {error}=await supabaseClient.from("cart_items").update({quantity}).eq("id",existing.id).eq("user_id",currentUser.id);
+if(error)throw error;
+}else{
+const {error}=await supabaseClient.from("cart_items").insert({user_id:currentUser.id,product_id:product.id,quantity:1});
+if(error)throw error;
+}
+await updateCartCount();
+showToast((product.name||"Product")+" added to cart!");
+}catch(error){console.error("Cart error:",error);alert("Could not add to cart:\n\n"+error.message);}
+}
+
+async function buyNow(){
+if(!product)return;
+if(getStock()<=0){alert("This product is out of stock.");return;}
+if(!currentUser){alert("Please login first.");location.href="login.html";return;}
+const before=await getCartQuantityForProduct();
+await addToCart();
+const after=await getCartQuantityForProduct();
+if(after>before){location.href="cart.html";}
+}
+
+async function getCartQuantityForProduct(){
+if(!currentUser||!product)return 0;
+try{const {data,error}=await supabaseClient.from("cart_items").select("quantity").eq("user_id",currentUser.id).eq("product_id",product.id).maybeSingle();if(error)throw error;return Number(data?.quantity||0);}catch{return 0;}
+}
+
+async function updateCartCount(){
+const el=document.getElementById("cartCount");
+if(!currentUser){el.textContent="0";return;}
+try{
+const {data,error}=await supabaseClient.from("cart_items").select("quantity").eq("user_id",currentUser.id);
+if(error)throw error;
+el.textContent=(data||[]).reduce((t,i)=>t+Number(i.quantity||0),0);
+}catch(error){console.warn("Cart count error:",error);}
+}
+
+async function isWishlisted(){
+if(!currentUser||!product)return false;
+try{
+const {data,error}=await supabaseClient.from("wishlist_items").select("id").eq("user_id",currentUser.id).eq("product_id",String(product.id)).maybeSingle();
+if(!error&&data)return true;
+}catch(error){console.warn("Supabase wishlist check:",error);}
+try{
+const list=JSON.parse(localStorage.getItem("maatrixWishlist")||"[]");
+return Array.isArray(list)&&list.some(item=>String(typeof item==="object"?item.id:item)===String(product.id));
+}catch{return false;}
+}
+
+async function updateWishlistButton(){
+const button=document.getElementById("wishlistButton"),saved=await isWishlisted();
+button.textContent=saved?"♥":"♡";
+button.style.color="#ff4f79";
+}
+
+async function toggleWishlist(){
+if(!product)return;
+if(!currentUser){alert("Please login to use your wishlist.");location.href="login.html";return;}
+try{
+const saved=await isWishlisted();
+if(saved){
+const {error}=await supabaseClient.from("wishlist_items").delete().eq("user_id",currentUser.id).eq("product_id",String(product.id));
+if(error)throw error;
+showToast("Removed from wishlist");
+}else{
+const {error}=await supabaseClient.from("wishlist_items").insert({user_id:currentUser.id,product_id:String(product.id)});
+if(error)throw error;
+showToast("Added to wishlist ❤️");
+}
+await updateWishlistButton();await updateWishlistCount();
+}catch(error){
+console.error("Wishlist error:",error);
+try{
+let list=JSON.parse(localStorage.getItem("maatrixWishlist")||"[]");if(!Array.isArray(list))list=[];
+const index=list.findIndex(item=>String(typeof item==="object"?item.id:item)===String(product.id));
+if(index>=0){list.splice(index,1);showToast("Removed from wishlist");}else{list.push(product);showToast("Added to wishlist ❤️");}
+localStorage.setItem("maatrixWishlist",JSON.stringify(list));
+await updateWishlistButton();await updateWishlistCount();
+}catch(fallbackError){alert("Could not update wishlist:\n\n"+error.message);}
+}
+}
+
+async function updateWishlistCount(){
+const el=document.getElementById("wishlistCount");
+if(!currentUser){
+try{const list=JSON.parse(localStorage.getItem("maatrixWishlist")||"[]");el.textContent=Array.isArray(list)?list.length:0;}catch{el.textContent="0";}return;
+}
+try{
+const {data,error}=await supabaseClient.from("wishlist_items").select("id").eq("user_id",currentUser.id);
+if(!error&&Array.isArray(data)){el.textContent=data.length;return;}
+}catch(error){console.warn("Wishlist count:",error);}
+try{const list=JSON.parse(localStorage.getItem("maatrixWishlist")||"[]");el.textContent=Array.isArray(list)?list.length:0;}catch{el.textContent="0";}
+}
+
+function searchProduct(event){
+if(event.key!=="Enter")return;
+const value=event.target.value.trim();if(!value)return;
+location.href="index.html?search="+encodeURIComponent(value);
+}
+function showToast(message){
+const toast=document.getElementById("toast");toast.textContent=message;toast.classList.add("show");
+clearTimeout(window.__mkToastTimer);window.__mkToastTimer=setTimeout(()=>toast.classList.remove("show"),2500);
+}
+function showError(message){
+document.getElementById("productCard").innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:70px 20px"><div style="font-size:55px;margin-bottom:15px">⚠️</div><h2 style="color:#172033;margin-bottom:10px">${escapeHTML(message)}</h2><p style="color:#66738a;max-width:600px;margin:0 auto">Check the product link and try again.</p><a href="index.html" style="display:inline-block;margin-top:20px;background:linear-gradient(135deg,#2874f0,#7048e8);color:white;padding:13px 22px;border-radius:14px;text-decoration:none;font-weight:bold">← Back to Store</a></div>`;
+document.getElementById("reviewList").innerHTML=`<div class="no-reviews">Product reviews are unavailable.</div>`;
+}
+function escapeHTML(value){return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");}
+</script>
+</body>
+</html>

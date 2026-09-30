@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - MaatrixKart</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;color:#f5f7ff;background:radial-gradient(circle at 10% 5%,rgba(45,105,255,.24),transparent 32%),radial-gradient(circle at 90% 10%,rgba(140,65,255,.23),transparent 32%),radial-gradient(circle at 50% 100%,rgba(0,180,255,.10),transparent 40%),#060912}
+.box{width:100%;max-width:430px;padding:32px;background:linear-gradient(145deg,rgba(255,255,255,.12),rgba(255,255,255,.035));backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);border:1px solid rgba(255,255,255,.14);border-radius:24px;box-shadow:0 30px 70px rgba(0,0,0,.42)}
+.logo{text-align:center;font-size:30px;font-weight:800;margin-bottom:25px;background:linear-gradient(90deg,#fff,#9fc8ff,#d7baff);-webkit-background-clip:text;background-clip:text;color:transparent}
+h2{color:#fff;font-size:24px;margin-bottom:10px}.sub{color:#aeb8cc;font-size:14px;line-height:1.5;margin-bottom:18px}
+input{width:100%;padding:14px;margin:7px 0;border:1px solid rgba(255,255,255,.13);border-radius:13px;outline:none;color:#fff;background:rgba(255,255,255,.065);font-size:15px}
+input:focus{border-color:rgba(100,160,255,.65);box-shadow:0 0 0 3px rgba(60,125,255,.1)}
+.password-wrap{position:relative}.password-wrap input{padding-right:50px}.eye{position:absolute;right:7px;top:4px;width:42px;height:42px;border:0;border-radius:10px;background:rgba(255,255,255,.055);color:#b4bfd2;cursor:pointer}
+.btn{width:100%;padding:14px;margin-top:12px;border-radius:14px;border:1px solid rgba(255,255,255,.13);color:#fff;font-weight:bold;cursor:pointer;background:rgba(255,255,255,.07)}
+.primary{background:linear-gradient(135deg,#2874f0,#7048e8);box-shadow:0 12px 30px rgba(45,105,240,.25)}
+.btn:disabled{opacity:.55;cursor:not-allowed}.hidden{display:none!important}
+.panel{margin-top:15px;padding:17px;border-radius:18px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.045)}
+.code{font-size:25px;text-align:center;letter-spacing:8px}
+.message{display:none;margin-top:14px;padding:13px;border-radius:13px;line-height:1.5;font-size:14px;border:1px solid}
+.error{display:block;color:#ffabb5;background:rgba(255,65,80,.16);border-color:rgba(255,80,100,.22)}
+.success{display:block;color:#7be5ad;background:rgba(35,200,115,.15);border-color:rgba(60,220,140,.20)}
+.info{display:block;color:#bcd6ff;background:rgba(60,125,255,.11);border-color:rgba(80,140,255,.2)}
+.links{text-align:center;margin-top:18px;color:#9ca8bb;font-size:14px;line-height:2}.links a{color:#9ec6ff;text-decoration:none}
+.note{font-size:12px;color:#8995aa;line-height:1.5;margin-top:10px}
+.spinner{display:inline-block;width:17px;height:17px;border:3px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:7px}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media(max-width:500px){body{padding:14px}.box{padding:27px 21px}.logo{font-size:27px}}
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="logo">MaatrixKart</div>
+
+  <div id="passwordStep">
+    <h2>Login</h2>
+    <p class="sub">Enter your email and password.</p>
+
+    <form id="loginForm">
+      <input id="email" type="email" placeholder="Gmail / Email Address" autocomplete="email" required>
+      <div class="password-wrap">
+        <input id="password" type="password" placeholder="Password" autocomplete="current-password" required>
+        <button class="eye" type="button" onclick="togglePassword()" aria-label="Show password">👁</button>
+      </div>
+      <button id="loginButton" class="btn primary" type="submit">Login</button>
+    </form>
+  </div>
+
+  <div id="otpStep" class="panel hidden">
+    <h2 style="font-size:21px">📧 Verify your email</h2>
+    <p class="sub">A 6-digit verification code has been sent to:</p>
+    <p id="otpEmail" style="font-weight:800;word-break:break-all;margin-bottom:10px"></p>
+
+    <input id="otpCode" class="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000">
+
+    <button id="verifyButton" class="btn primary" type="button">Verify & Login</button>
+    <button id="resendButton" class="btn" type="button">Resend Code</button>
+    <button id="backButton" class="btn" type="button">Back</button>
+
+    <p class="note">Open the Gmail app, find the MaatrixKart verification email, and enter its 6-digit code here.</p>
+  </div>
+
+  <div id="message" class="message"></div>
+
+  <div class="links">
+    <a href="register.html">Create Account</a>
+    &nbsp;•&nbsp;
+    <a href="index.html">Store</a>
+  </div>
+</div>
+
+<script>
+"use strict";
+
+const db=window.db;
+let loginEmail="";
+let loginPassword="";
+
+const passwordStep=document.getElementById("passwordStep");
+const otpStep=document.getElementById("otpStep");
+const loginForm=document.getElementById("loginForm");
+const loginButton=document.getElementById("loginButton");
+const verifyButton=document.getElementById("verifyButton");
+const resendButton=document.getElementById("resendButton");
+const backButton=document.getElementById("backButton");
+const otpCode=document.getElementById("otpCode");
+const message=document.getElementById("message");
+
+function showMessage(text,type="info"){
+  message.textContent=text;
+  message.className="message "+type;
+  message.style.display="block";
+}
+function clearMessage(){message.style.display="none"}
+function togglePassword(){
+  const p=document.getElementById("password");
+  const b=document.querySelector(".eye");
+  if(p.type==="password"){p.type="text";b.textContent="🙈"}else{p.type="password";b.textContent="👁"}
+}
+function digitsOnly(){
+  otpCode.value=otpCode.value.replace(/\D/g,"").slice(0,6);
+}
+otpCode.addEventListener("input",digitsOnly);
+
+function setLoginLoading(on){
+  loginButton.disabled=on;
+  loginButton.innerHTML=on?'<span class="spinner"></span>Checking...':"Login";
+}
+function setVerifyLoading(on){
+  verifyButton.disabled=on;
+  verifyButton.innerHTML=on?'<span class="spinner"></span>Verifying...':"Verify & Login";
+}
+
+/*
+ * IMPORTANT:
+ * Supabase email OTP is a supported passwordless sign-in method.
+ * The browser cannot make it a true password+email second factor by itself.
+ * This page first checks the password, then asks for an email OTP.
+ * For production-grade enforcement of BOTH factors, use Supabase MFA/TOTP
+ * or a dedicated server-side authentication flow.
+ */
+
+loginForm.addEventListener("submit",async e=>{
+  e.preventDefault();
+  clearMessage();
+
+  if(!db){showMessage("Supabase is not connected. Check supabase-config.js.","error");return}
+
+  loginEmail=document.getElementById("email").value.trim().toLowerCase();
+  loginPassword=document.getElementById("password").value;
+
+  if(!loginEmail||!loginPassword){
+    showMessage("Enter your email and password.","error");return;
+  }
+
+  setLoginLoading(true);
+
+  try{
+    /*
+     * Step 1: verify password.
+     * We immediately sign out the temporary session so the customer
+     * cannot access the account before completing the email-code step.
+     */
+    const {data,error}=await db.auth.signInWithPassword({
+      email:loginEmail,
+      password:loginPassword
+    });
+
+    if(error)throw error;
+    if(!data?.user)throw new Error("Login could not be completed.");
+
+    if(!data.user.email_confirmed_at){
+      await db.auth.signOut({scope:"local"});
+      showMessage("Please verify your email address first. Check Gmail for your verification code.","error");
+      setLoginLoading(false);
+      return;
+    }
+
+    await db.auth.signOut({scope:"local"});
+
+    /*
+     * Step 2: request the 6-digit email OTP.
+     * shouldCreateUser:false prevents this login screen from creating
+     * a brand-new account.
+     */
+    const {error:otpError}=await db.auth.signInWithOtp({
+      email:loginEmail,
+      options:{shouldCreateUser:false}
+    });
+
+    if(otpError)throw otpError;
+
+    document.getElementById("otpEmail").textContent=loginEmail;
+    passwordStep.classList.add("hidden");
+    otpStep.classList.remove("hidden");
+    showMessage("Verification code sent. Open Gmail and enter the 6-digit code.","success");
+    otpCode.focus();
+
+  }catch(error){
+    console.error("Login error:",error);
+    let text=error.message||"Login failed. Please try again.";
+    if(text.toLowerCase().includes("invalid login credentials")){
+      text="Incorrect email or password.";
+    }
+    showMessage(text,"error");
+  }finally{
+    setLoginLoading(false);
+  }
+});
+
+verifyButton.addEventListener("click",async()=>{
+  clearMessage();
+  const token=otpCode.value.trim();
+
+  if(token.length!==6){
+    showMessage("Enter the 6-digit code from Gmail.","error");return;
+  }
+  if(!db){showMessage("Supabase is not connected.","error");return}
+
+  setVerifyLoading(true);
+
+  try{
+    /*
+     * Email OTP verification creates the authenticated Supabase session.
+     */
+    const {data,error}=await db.auth.verifyOtp({
+      email:loginEmail,
+      token,
+      type:"email"
+    });
+
+    if(error)throw error;
+    if(!data?.session)throw new Error("The code was accepted, but a login session was not created.");
+
+    localStorage.setItem("maatrixLoggedIn","true");
+    localStorage.setItem("maatrixUserEmail",loginEmail);
+    localStorage.removeItem("maatrixPendingVerificationEmail");
+
+    showMessage("Login successful. Checking account type...","success");
+
+    let destination = new URLSearchParams(location.search).get("redirect");
+
+    if (!destination) {
+      try {
+        const { data: currentUserData, error: userError } =
+          await db.auth.getUser();
+
+        if (userError) throw userError;
+
+        const currentUser = currentUserData?.user;
+
+        if (currentUser) {
+          const { data: profile, error: profileError } =
+            await db
+              .from("profiles")
+              .select("is_admin, role")
+              .eq("id", currentUser.id)
+              .maybeSingle();
+
+          if (profileError) {
+            console.warn("Admin profile check failed:", profileError);
+          }
+
+          const isAdmin =
+            profile?.is_admin === true ||
+            String(profile?.role || "").toLowerCase() === "admin";
+
+          destination = isAdmin ? "admin.html" : "account.html";
+        } else {
+          destination = "account.html";
+        }
+      } catch (profileCheckError) {
+        console.warn("Could not determine account type:", profileCheckError);
+        destination = "account.html";
+      }
+    }
+
+    setTimeout(()=>{
+      location.href=destination;
+    },700);
+
+  }catch(error){
+    console.error("OTP verification error:",error);
+    showMessage(error.message||"Invalid or expired code. Request a new code and try again.","error");
+  }finally{
+    setVerifyLoading(false);
+  }
+});
+
+resendButton.addEventListener("click",async()=>{
+  clearMessage();
+  resendButton.disabled=true;
+  resendButton.innerHTML='<span class="spinner"></span>Sending...';
+
+  try{
+    const {error}=await db.auth.signInWithOtp({
+      email:loginEmail,
+      options:{shouldCreateUser:false}
+    });
+    if(error)throw error;
+    showMessage("A new 6-digit code was sent to Gmail.","success");
+  }catch(error){
+    console.error("Resend OTP error:",error);
+    showMessage(error.message||"Could not resend the code. Please wait and try again.","error");
+  }finally{
+    setTimeout(()=>{
+      resendButton.disabled=false;
+      resendButton.textContent="Resend Code";
+    },1200);
+  }
+});
+
+backButton.addEventListener("click",async()=>{
+  try{if(db)await db.auth.signOut({scope:"local"})}catch(e){}
+  otpStep.classList.add("hidden");
+  passwordStep.classList.remove("hidden");
+  otpCode.value="";
+  clearMessage();
+});
+
+if(!db){
+  showMessage("Supabase is not connected. Check supabase-config.js.","error");
+}
+</script>
+</body>
+</html>

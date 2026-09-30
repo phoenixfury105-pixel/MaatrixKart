@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Account - MaatrixKart</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase-config.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:20px;
+    color:#f5f7ff;
+    background:
+        radial-gradient(circle at 10% 5%,rgba(45,105,255,.24),transparent 32%),
+        radial-gradient(circle at 90% 10%,rgba(140,65,255,.23),transparent 32%),
+        radial-gradient(circle at 50% 100%,rgba(0,180,255,.10),transparent 40%),
+        #060912;
+    background-attachment:fixed;
+}
+
+.box{
+    width:100%;
+    max-width:440px;
+    padding:32px;
+    position:relative;
+    background:linear-gradient(
+        145deg,
+        rgba(255,255,255,.12),
+        rgba(255,255,255,.035)
+    );
+    backdrop-filter:blur(30px);
+    -webkit-backdrop-filter:blur(30px);
+    border:1px solid rgba(255,255,255,.14);
+    border-radius:24px;
+    box-shadow:
+        0 30px 70px rgba(0,0,0,.42),
+        inset 0 1px 0 rgba(255,255,255,.08);
+}
+
+.box:before{
+    content:"";
+    position:absolute;
+    top:0;
+    left:12%;
+    right:12%;
+    height:1px;
+    background:linear-gradient(
+        90deg,
+        transparent,
+        rgba(255,255,255,.35),
+        transparent
+    );
+}
+
+.logo{
+    text-align:center;
+    font-size:30px;
+    font-weight:800;
+    margin-bottom:27px;
+    background:linear-gradient(
+        90deg,
+        #fff,
+        #9fc8ff,
+        #d7baff
+    );
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+}
+
+h2{
+    color:#fff;
+    font-size:24px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#aeb9cc;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:18px;
+}
+
+input{
+    width:100%;
+    padding:14px;
+    margin:7px 0;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:13px;
+    outline:none;
+    color:#fff;
+    background:rgba(255,255,255,.065);
+    font-size:15px;
+    transition:.2s;
+}
+
+input::placeholder{
+    color:#8995aa;
+}
+
+input:focus{
+    border-color:rgba(100,160,255,.65);
+    background:rgba(255,255,255,.095);
+    box-shadow:0 0 0 3px rgba(60,125,255,.10);
+}
+
+.password-wrapper{
+    position:relative;
+}
+
+.password-wrapper input{
+    padding-right:52px;
+}
+
+.toggle-password{
+    position:absolute;
+    right:7px;
+    top:4px;
+    width:42px;
+    height:42px;
+    padding:0;
+    margin:0;
+    border:0;
+    border-radius:10px;
+    background:rgba(255,255,255,.055);
+    color:#b4bfd2;
+    font-size:17px;
+    cursor:pointer;
+}
+
+.primary-button,
+.secondary-button{
+    width:100%;
+    padding:14px;
+    margin-top:17px;
+    border:1px solid rgba(255,255,255,.13);
+    border-radius:14px;
+    color:#fff;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.primary-button{
+    background:linear-gradient(
+        135deg,
+        #2874f0,
+        #7048e8
+    );
+    box-shadow:0 12px 30px rgba(45,105,240,.25);
+}
+
+.secondary-button{
+    margin-top:10px;
+    background:rgba(255,255,255,.07);
+}
+
+.primary-button:hover:not(:disabled),
+.secondary-button:hover:not(:disabled){
+    transform:translateY(-2px);
+}
+
+button:disabled{
+    opacity:.6;
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+.message{
+    display:none;
+    margin-top:16px;
+    padding:13px 14px;
+    border-radius:13px;
+    line-height:1.5;
+    font-size:14px;
+    border:1px solid;
+}
+
+.message.error{
+    display:block;
+    color:#ffabb5;
+    background:rgba(255,65,80,.16);
+    border-color:rgba(255,80,100,.22);
+}
+
+.message.success{
+    display:block;
+    color:#7be5ad;
+    background:rgba(35,200,115,.15);
+    border-color:rgba(60,220,140,.20);
+}
+
+.links{
+    text-align:center;
+    margin-top:20px;
+    color:#9ca8bb;
+    font-size:14px;
+    line-height:2;
+}
+
+.links a{
+    color:#9ec6ff;
+    text-decoration:none;
+}
+
+.links a:hover{
+    text-decoration:underline;
+}
+
+.note{
+    font-size:12px;
+    color:#8995aa;
+    margin-top:10px;
+    line-height:1.5;
+}
+
+/* OTP PANEL */
+
+#verifyPanel{
+    display:none;
+}
+
+.otp-title{
+    text-align:center;
+    font-size:23px;
+    font-weight:bold;
+    color:#fff;
+    margin-bottom:8px;
+}
+
+.otp-text{
+    text-align:center;
+    color:#aeb9cc;
+    font-size:14px;
+    line-height:1.5;
+    margin-bottom:12px;
+}
+
+.email-display{
+    text-align:center;
+    color:#9ec6ff;
+    font-weight:bold;
+    word-break:break-word;
+    margin-bottom:12px;
+}
+
+.otp-input{
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    letter-spacing:9px;
+}
+
+.timer{
+    text-align:center;
+    color:#8995aa;
+    font-size:13px;
+    margin-top:12px;
+}
+
+@media(max-width:500px){
+    body{
+        padding:15px;
+    }
+
+    .box{
+        padding:27px 21px;
+        border-radius:21px;
+    }
+
+    .logo{
+        font-size:27px;
+    }
+
+    h2{
+        font-size:22px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+    <div class="logo">MaatrixKart</div>
+
+
+    <!-- ================= REGISTER PANEL ================= -->
+
+    <section id="registerPanel">
+
+        <h2>Create Account</h2>
+
+        <div class="subtitle">
+            Create your MaatrixKart account. A 6-digit
+            verification code will be sent to your email.
+        </div>
+
+        <form id="registerForm">
+
+            <input
+                type="text"
+                id="name"
+                placeholder="Full Name"
+                autocomplete="name"
+                required
+            >
+
+            <input
+                type="email"
+                id="email"
+                placeholder="Gmail / Email Address"
+                autocomplete="email"
+                required
+            >
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Password"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="passwordToggle"
+                    onclick="togglePassword(
+                        'password',
+                        'passwordToggle'
+                    )"
+                    aria-label="Show password"
+                >👁</button>
+
+            </div>
+
+
+            <div class="password-wrapper">
+
+                <input
+                    type="password"
+                    id="confirmPassword"
+                    placeholder="Confirm Password"
+                    autocomplete="new-password"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="button"
+                    class="toggle-password"
+                    id="confirmToggle"
+                    onclick="togglePassword(
+                        'confirmPassword',
+                        'confirmToggle'
+                    )"
+                    aria-label="Show password"
+                >👁</button>
+
+            </div>
+
+
+            <button
+                id="registerButton"
+                class="primary-button"
+                type="submit"
+            >
+                Create Account
+            </button>
+
+        </form>
+
+
+        <div
+            id="registerMessage"
+            class="message"
+        ></div>
+
+
+        <div class="note">
+            After creating your account, check your email
+            for the 6-digit verification code.
+        </div>
+
+
+        <div class="links">
+            Already have an account?
+            <a href="login.html">Login</a>
+        </div>
+
+
+        <div class="links">
+            <a href="index.html">
+                ← Back to Store
+            </a>
+        </div>
+
+    </section>
+
+
+    <!-- ================= VERIFICATION PANEL ================= -->
+
+    <section id="verifyPanel">
+
+        <div class="otp-title">
+            Verify Your Email
+        </div>
+
+
+        <div class="otp-text">
+            We sent a 6-digit verification code to:
+        </div>
+
+
+        <div
+            id="emailDisplay"
+            class="email-display"
+        ></div>
+
+
+        <form id="verifyForm">
+
+            <input
+                type="text"
+                id="otp"
+                class="otp-input"
+                inputmode="numeric"
+                autocomplete="one-time-code"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                placeholder="000000"
+                required
+            >
+
+
+            <button
+                id="verifyButton"
+                class="primary-button"
+                type="submit"
+            >
+                Verify Email
+            </button>
+
+        </form>
+
+
+        <button
+            id="resendButton"
+            class="secondary-button"
+            type="button"
+        >
+            Resend Code
+        </button>
+
+
+        <button
+            id="backButton"
+            class="secondary-button"
+            type="button"
+        >
+            Back
+        </button>
+
+
+        <div
+            id="verifyMessage"
+            class="message"
+        ></div>
+
+
+        <div
+            id="timer"
+            class="timer"
+        ></div>
+
+    </section>
+
+</div>
+
+
+<script>
+"use strict";
+
+
+/* ================= SUPABASE ================= */
+
+const supabaseClient = window.db;
+
+
+/* ================= ELEMENTS ================= */
+
+const registerPanel =
+    document.getElementById("registerPanel");
+
+const verifyPanel =
+    document.getElementById("verifyPanel");
+
+const registerForm =
+    document.getElementById("registerForm");
+
+const verifyForm =
+    document.getElementById("verifyForm");
+
+const registerButton =
+    document.getElementById("registerButton");
+
+const verifyButton =
+    document.getElementById("verifyButton");
+
+const resendButton =
+    document.getElementById("resendButton");
+
+const backButton =
+    document.getElementById("backButton");
+
+const registerMessage =
+    document.getElementById("registerMessage");
+
+const verifyMessage =
+    document.getElementById("verifyMessage");
+
+const emailDisplay =
+    document.getElementById("emailDisplay");
+
+const otpInput =
+    document.getElementById("otp");
+
+const timerElement =
+    document.getElementById("timer");
+
+
+let pendingEmail = "";
+let pendingName = "";
+
+let resendTimer = null;
+let resendSeconds = 0;
+
+
+/* ================= MESSAGE ================= */
+
+function showMessage(element, text, type){
+
+    element.textContent = text;
+
+    element.className =
+        "message " + type;
+
+    element.style.display = "block";
+}
+
+
+function hideMessage(element){
+
+    element.textContent = "";
+
+    element.className = "message";
+
+    element.style.display = "none";
+}
+
+
+/* ================= PASSWORD TOGGLE ================= */
+
+function togglePassword(inputId, buttonId){
+
+    const input =
+        document.getElementById(inputId);
+
+    const button =
+        document.getElementById(buttonId);
+
+
+    if(input.type === "password"){
+
+        input.type = "text";
+
+        button.textContent = "🙈";
+
+        button.setAttribute(
+            "aria-label",
+            "Hide password"
+        );
+
+    }else{
+
+        input.type = "password";
+
+        button.textContent = "👁";
+
+        button.setAttribute(
+            "aria-label",
+            "Show password"
+        );
+    }
+}
+
+
+/* ================= LOADING ================= */
+
+function setRegisterLoading(loading){
+
+    registerButton.disabled = loading;
+
+    registerButton.textContent =
+        loading
+            ? "Creating account..."
+            : "Create Account";
+}
+
+
+function setVerifyLoading(loading){
+
+    verifyButton.disabled = loading;
+
+    verifyButton.textContent =
+        loading
+            ? "Verifying..."
+            : "Verify Email";
+}
+
+
+/* ================= RESEND TIMER ================= */
+
+function startResendTimer(seconds = 60){
+
+    clearInterval(resendTimer);
+
+    resendSeconds = seconds;
+
+    resendButton.disabled = true;
+
+    updateTimer();
+
+
+    resendTimer = setInterval(() => {
+
+        resendSeconds--;
+
+        updateTimer();
+
+
+        if(resendSeconds <= 0){
+
+            clearInterval(resendTimer);
+
+            resendTimer = null;
+
+            resendSeconds = 0;
+
+            resendButton.disabled = false;
+
+            resendButton.textContent =
+                "Resend Code";
+
+            timerElement.textContent =
+                "You can request a new code.";
+
+        }
+
+    },1000);
+}
+
+
+function updateTimer(){
+
+    resendButton.disabled =
+        resendSeconds > 0;
+
+    resendButton.textContent =
+        resendSeconds > 0
+            ? "Resend Code (" + resendSeconds + ")"
+            : "Resend Code";
+
+    if(resendSeconds > 0){
+
+        timerElement.textContent =
+            "You can resend a code in " +
+            resendSeconds +
+            " seconds.";
+
+    }
+}
+
+
+/* ================= SHOW VERIFY PANEL ================= */
+
+function showVerificationPanel(email,name){
+
+    pendingEmail = email;
+    pendingName = name;
+
+
+    localStorage.setItem(
+        "maatrixUserName",
+        name
+    );
+
+    localStorage.setItem(
+        "maatrixUserEmail",
+        email
+    );
+
+    localStorage.setItem(
+        "maatrixPendingVerificationEmail",
+        email
+    );
+
+
+    emailDisplay.textContent = email;
+
+
+    registerPanel.style.display = "none";
+
+    verifyPanel.style.display = "block";
+
+
+    hideMessage(registerMessage);
+
+    hideMessage(verifyMessage);
+
+
+    otpInput.value = "";
+
+    otpInput.focus();
+
+
+    startResendTimer(60);
+}
+
+
+/* ================= SUPABASE CHECK ================= */
+
+if(!supabaseClient){
+
+    showMessage(
+        registerMessage,
+        "Supabase is not connected. Check supabase-config.js.",
+        "error"
+    );
+}
+
+
+/* ================= CREATE ACCOUNT ================= */
+
+registerForm.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        hideMessage(registerMessage);
+
+
+        if(!supabaseClient){
+
+            showMessage(
+                registerMessage,
+                "Supabase is not connected.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const name =
+            document
+                .getElementById("name")
+                .value
+                .trim();
+
+
+        const email =
+            document
+                .getElementById("email")
+                .value
+                .trim()
+                .toLowerCase();
+
+
+        const password =
+            document
+                .getElementById("password")
+                .value;
+
+
+        const confirmPassword =
+            document
+                .getElementById("confirmPassword")
+                .value;
+
+
+        /* VALIDATION */
+
+        if(!name){
+
+            showMessage(
+                registerMessage,
+                "Please enter your name.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(!email){
+
+            showMessage(
+                registerMessage,
+                "Please enter your email address.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(password.length < 6){
+
+            showMessage(
+                registerMessage,
+                "Password must contain at least 6 characters.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(password !== confirmPassword){
+
+            showMessage(
+                registerMessage,
+                "Passwords do not match.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        setRegisterLoading(true);
+
+
+        try{
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.signUp({
+
+                    email: email,
+
+                    password: password,
+
+                    options: {
+                        data: {
+                            name: name
+                        }
+                    }
+
+                });
+
+
+            if(error){
+
+                throw error;
+            }
+
+
+            /*
+             * Email confirmation enabled:
+             * user exists but session is null.
+             *
+             * Supabase sends the Confirm sign up email.
+             */
+
+            if(data?.user && !data?.session){
+
+                localStorage.setItem(
+                    "maatrixUserName",
+                    name
+                );
+
+                localStorage.setItem(
+                    "maatrixUserEmail",
+                    email
+                );
+
+                localStorage.setItem(
+                    "maatrixPendingVerificationEmail",
+                    email
+                );
+
+
+                showVerificationPanel(
+                    email,
+                    name
+                );
+
+
+                showMessage(
+                    verifyMessage,
+                    "Account created. Check your Gmail for the 6-digit verification code.",
+                    "success"
+                );
+
+
+                return;
+            }
+
+
+            /*
+             * Email confirmation disabled.
+             */
+
+            if(data?.session){
+
+                localStorage.setItem(
+                    "maatrixLoggedIn",
+                    "true"
+                );
+
+                localStorage.setItem(
+                    "maatrixUserEmail",
+                    email
+                );
+
+                localStorage.setItem(
+                    "maatrixUserName",
+                    name
+                );
+
+
+                showMessage(
+                    registerMessage,
+                    "Account created successfully. Redirecting...",
+                    "success"
+                );
+
+
+                setTimeout(
+                    () => {
+                        window.location.href =
+                            "account.html";
+                    },
+                    800
+                );
+
+
+                return;
+            }
+
+
+            throw new Error(
+                "Account was created, but verification status could not be determined."
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Registration error:",
+                error
+            );
+
+
+            let msg =
+                error?.message ||
+                "Something went wrong. Please try again.";
+
+
+            if(
+                msg
+                    .toLowerCase()
+                    .includes("user already registered")
+            ){
+
+                msg =
+                    "This email is already registered. Please use the Login page.";
+            }
+
+
+            showMessage(
+                registerMessage,
+                msg,
+                "error"
+            );
+
+
+            setRegisterLoading(false);
+        }
+
+    }
+);
+
+
+/* ================= VERIFY EMAIL ================= */
+
+verifyForm.addEventListener(
+    "submit",
+    async function(event){
+
+        event.preventDefault();
+
+        hideMessage(verifyMessage);
+
+
+        if(!supabaseClient){
+
+            showMessage(
+                verifyMessage,
+                "Supabase is not connected.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        const token =
+            otpInput
+                .value
+                .replace(/\D/g,"")
+                .slice(0,6);
+
+
+        if(!pendingEmail){
+
+            pendingEmail =
+                localStorage.getItem(
+                    "maatrixPendingVerificationEmail"
+                ) || "";
+        }
+
+
+        if(!pendingEmail){
+
+            showMessage(
+                verifyMessage,
+                "Verification email was not found. Please create the account again.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(!/^\d{6}$/.test(token)){
+
+            showMessage(
+                verifyMessage,
+                "Please enter the 6-digit code from your email.",
+                "error"
+            );
+
+            otpInput.focus();
+
+            return;
+        }
+
+
+        setVerifyLoading(true);
+
+
+        try{
+
+            /*
+             * Verify the signup email OTP.
+             *
+             * Supabase returns an authenticated
+             * session after successful verification.
+             */
+
+            const {
+                data,
+                error
+            } =
+                await supabaseClient.auth.verifyOtp({
+
+                    email: pendingEmail,
+
+                    token: token,
+
+                    type: "email"
+
+                });
+
+
+            if(error){
+
+                throw error;
+            }
+
+
+            if(!data?.session){
+
+                throw new Error(
+                    "Email was verified, but no login session was returned. Please use the Login page."
+                );
+            }
+
+
+            localStorage.setItem(
+                "maatrixLoggedIn",
+                "true"
+            );
+
+            localStorage.setItem(
+                "maatrixUserEmail",
+                pendingEmail
+            );
+
+            localStorage.setItem(
+                "maatrixUserName",
+                pendingName ||
+                localStorage.getItem(
+                    "maatrixUserName"
+                ) ||
+                ""
+            );
+
+
+            localStorage.removeItem(
+                "maatrixPendingVerificationEmail"
+            );
+
+
+            showMessage(
+                verifyMessage,
+                "Email verified successfully! Your MaatrixKart account is ready.",
+                "success"
+            );
+
+
+            setTimeout(
+                () => {
+                    window.location.href =
+                        "account.html";
+                },
+                900
+            );
+
+
+        }catch(error){
+
+            console.error(
+                "Verification error:",
+                error
+            );
+
+
+            let msg =
+                error?.message ||
+                "Verification failed. Please check the code and try again.";
+
+
+            const lower =
+                msg.toLowerCase();
+
+
+            if(
+                lower.includes("expired") ||
+                lower.includes("invalid")
+            ){
+
+                msg =
+                    "The code is invalid or expired. Please request a new code.";
+            }
+
+
+            showMessage(
+                verifyMessage,
+                msg,
+                "error"
+            );
+
+
+            otpInput.select();
+
+
+        }finally{
+
+            setVerifyLoading(false);
+        }
+
+    }
+);
+
+
+/* ================= RESEND CODE ================= */
+
+resendButton.addEventListener(
+    "click",
+    async function(){
+
+        hideMessage(verifyMessage);
+
+
+        if(!supabaseClient){
+
+            showMessage(
+                verifyMessage,
+                "Supabase is not connected.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(!pendingEmail){
+
+            pendingEmail =
+                localStorage.getItem(
+                    "maatrixPendingVerificationEmail"
+                ) || "";
+        }
+
+
+        if(!pendingEmail){
+
+            showMessage(
+                verifyMessage,
+                "Verification email was not found.",
+                "error"
+            );
+
+            return;
+        }
+
+
+        if(resendSeconds > 0){
+
+            return;
+        }
+
+
+        resendButton.disabled = true;
+
+        resendButton.textContent =
+            "Sending...";
+
+
+        try{
+
+            /*
+             * Resend the signup confirmation email.
+             */
+
+            const { error } =
+                await supabaseClient.auth.resend({
+
+                    type: "signup",
+
+                    email: pendingEmail
+
+                });
+
+
+            if(error){
+
+                throw error;
+            }
+
+
+            showMessage(
+                verifyMessage,
+                "A new verification code has been sent to your email.",
+                "success"
+            );
+
+
+            otpInput.value = "";
+
+            otpInput.focus();
+
+
+            startResendTimer(60);
+
+
+        }catch(error){
+
+            console.error(
+                "Resend error:",
+                error
+            );
+
+
+            showMessage(
+                verifyMessage,
+                error?.message ||
+                "Could not resend the code. Please try again.",
+                "error"
+            );
+
+
+            resendButton.disabled = false;
+
+            resendButton.textContent =
+                "Resend Code";
+        }
+
+    }
+);
+
+
+/* ================= BACK ================= */
+
+backButton.addEventListener(
+    "click",
+    function(){
+
+        clearInterval(resendTimer);
+
+        resendTimer = null;
+
+        resendSeconds = 0;
+
+
+        verifyPanel.style.display = "none";
+
+        registerPanel.style.display = "block";
+
+
+        hideMessage(verifyMessage);
+
+        otpInput.value = "";
+
+
+        setRegisterLoading(false);
+    }
+);
+
+
+/* ================= OTP INPUT ================= */
+
+otpInput.addEventListener(
+    "input",
+    function(){
+
+        this.value =
+            this.value
+                .replace(/\D/g,"")
+                .slice(0,6);
+    }
+);
+
+
+/* ================= RESTORE PENDING VERIFICATION ================= */
+
+(function restorePendingVerification(){
+
+    const savedEmail =
+        localStorage.getItem(
+            "maatrixPendingVerificationEmail"
+        );
+
+
+    const savedName =
+        localStorage.getItem(
+            "maatrixUserName"
+        ) || "";
+
+
+    if(savedEmail){
+
+        pendingEmail = savedEmail;
+
+        pendingName = savedName;
+
+
+        emailDisplay.textContent =
+            savedEmail;
+
+
+        registerPanel.style.display =
+            "none";
+
+        verifyPanel.style.display =
+            "block";
+
+
+        startResendTimer(60);
+    }
+
+})();
+</script>
+
+</body>
+</html>
